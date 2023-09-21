@@ -1,0 +1,12 @@
+{% macro banner(name='banner', value='', url='') -%}
+	<div class="banner-wrapper">
+		<a class="banner-link" href="{{ url }}">
+			<img class="banner-img" src="{{ value }}" alt="{{ name }}">
+		</a>
+	</div>
+{%- endmacro %}
+
+{% macro input(name, value='', type='text', size=20) -%}
+	<input type="{{ type }}" name="{{ name }}" value="{{
+			value|e }}" size="{{ size }}">
+{%- endmacro %}

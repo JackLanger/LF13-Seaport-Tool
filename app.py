@@ -1,11 +1,11 @@
-from flask import Flask, request
+from flask import Flask, request, render_template
 
 app = Flask(__name__)
 
 
 @app.route("/")
 def hello_world():  # put application's code here
-    return "Hello World!"
+    return render_template("index.html")
 
 
 @app.route("/profiles")
