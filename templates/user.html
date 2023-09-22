@@ -1,0 +1,10 @@
+{% from 'macros.jinja' import banner with context %}
+{% include 'components/head.html' %}
+<body>
+<div>
+	<p>{{ user.name }}</p>
+	<p>{{ user.age }}</p>
+</div>
+</body>
+{% include 'components/footer.html' %}
+{% include 'components/tail.html' %}

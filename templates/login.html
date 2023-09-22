@@ -1,6 +1,6 @@
 {% include 'components/head.html' %}
 <body>
-{% include 'components/macros.jinja' %}
+{% from 'macros.jinja' import banner with context %}
 <form action="">
 
 	<input class="username-input" id="username-inp" type="text" placeholder="Username"/>
