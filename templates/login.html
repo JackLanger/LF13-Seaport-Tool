@@ -1,0 +1,15 @@
+{% include 'components/head.html' %}
+<body>
+{% from 'macros.jinja' import banner with context %}
+<form action="">
+
+	<input class="username-input" id="username-inp" type="text" placeholder="Username"/>
+
+	<input class="password-input" id="password-inp" placeholder="Password"/>
+
+	<a href="">Not yet registered? Register for free.</a>
+	<input type="submit" content="Login"/>
+</form>
+</body>
+{% include 'components/footer.html' %}
+{% include 'components/tail.html' %}
