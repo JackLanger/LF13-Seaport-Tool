@@ -4,11 +4,12 @@ app = Flask(__name__)
 POST = "POST"
 GET = "GET"
 
+
+
 @app.route("/")
 def hello_world():  # put application's code here
     return "hello world"
     # return render_template("index.html")
-
 
 @app.route("/profiles")
 def profiles():
