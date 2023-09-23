@@ -2,11 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-<<<<<<< HEAD
       <module fileurl="file://$PROJECT_DIR$/.idea/seaport.iml" filepath="$PROJECT_DIR$/.idea/seaport.iml" />
-=======
-      <module fileurl="file://$PROJECT_DIR$/.idea/seaport_flask.iml" filepath="$PROJECT_DIR$/.idea/seaport_flask.iml" />
->>>>>>> a181fbadb2f64556bd1bdf1c6d5062d44504775e
     </modules>
   </component>
 </project>
