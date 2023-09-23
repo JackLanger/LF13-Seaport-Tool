@@ -3,19 +3,12 @@
   <component name="Black">
     <option name="enabledOnReformat" value="true" />
     <option name="enabledOnSave" value="true" />
-<<<<<<< HEAD
-    <option name="pathToExecutable" value="C:\Users\Jacek\anaconda3\Scripts\black.exe" />
-    <option name="sdkUUID" value="3a617829-224c-475a-9927-f3b90c640947" />
-  </component>
-  <component name="PDMPlugin">
-    <option name="skipTestSources" value="false" />
-  </component>
-  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.9 (Seaport) (3)" project-jdk-type="Python SDK" />
-=======
     <option name="executionMode" value="BINARY" />
     <option name="pathToExecutable" value="C:\Users\Jacek\anaconda3\Scripts\black.exe" />
     <option name="sdkUUID" value="5a570b34-e0b1-480d-9e78-d92745cee383" />
   </component>
-  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.9 (seaport_flask)" project-jdk-type="Python SDK" />
->>>>>>> a181fbadb2f64556bd1bdf1c6d5062d44504775e
+  <component name="PDMPlugin">
+    <option name="skipTestSources" value="false" />
+  </component>
+  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.9 (Seaport)" project-jdk-type="Python SDK" />
 </project>
