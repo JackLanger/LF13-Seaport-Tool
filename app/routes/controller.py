@@ -1,15 +1,15 @@
 from flask import Flask, request, render_template
+
 app = Flask(__name__)
 
 POST = "POST"
 GET = "GET"
 
 
-
 @app.route("/")
-def hello_world():  # put application's code here
-    return "hello world"
-    # return render_template("index.html")
+def hello_world():
+    return render_template("index.html")
+
 
 @app.route("/profiles")
 def profiles():
@@ -18,7 +18,6 @@ def profiles():
 
 @app.route("/profiles/create", methods=[GET, POST])
 def save_profile():
-
     if request.method == POST:
         result = request.form
         return render_template("login.html", result=result)
