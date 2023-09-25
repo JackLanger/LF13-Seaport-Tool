@@ -38,3 +38,17 @@ class User:
 
     def removeShip(self, ship: Ship):
         self.__ships.remove(ship)
+
+    def to_dto(self):
+        return UserDTO(id=self.__id, quests=self.__quests, ships=self.__ships)
+
+    def update_from_dto(self, user_dto):
+        self.__id = user_dto.id
+        self.__quests = user_dto.quests
+        self.__ships = user_dto.ships
+
+class UserDTO:
+    def __init__(self, id: int, quests: List[Quest], ships: List[Ship]):
+        self.id = id
+        self.quests = quests
+        self.ships = ships
