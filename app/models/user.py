@@ -1,6 +1,6 @@
 from typing import List
-from app.models.ship import Ship
-from app.models.quest import Quest
+from .ship import Ship
+from .quest import Quest
 
 
 class User:
