@@ -22,3 +22,18 @@ class Ship:
 
     def setSailor(self, amt: int):
         self.__sailors = amt
+
+    def to_dto(self):
+        return ShipDTO(name=self.__name, capacity=self.__capacity, sailors=self.__sailors)
+
+    def update_from_dto(self, ship_dto):
+        self.__name = ship_dto.name
+        self.__capacity = ship_dto.capacity
+        self.__sailors = ship_dto.sailors
+
+
+class ShipDTO:
+    def __init__(self, name: str, capacity: int, sailors: int):
+        self.name = name
+        self.capacity = capacity
+        self.sailors = sailors
