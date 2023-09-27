@@ -14,3 +14,16 @@ class Quest:
 
     def setAmount(self, amt: int):
         self.__amount = amt
+
+    def to_dto(self):
+        return QuestDTO(resource=self.__resource, amount=self.__amount)
+
+    def update_from_dto(self, quest_dto):
+        self.__resource = quest_dto.resource
+        self.__amount = quest_dto.amount
+
+
+class QuestDTO:
+    def __init__(self, resource: str, amount: int):
+        self.resource = resource
+        self.amount = amount
