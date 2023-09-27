@@ -1,6 +1,8 @@
 {% from 'macros.jinja' import banner with context %}
 {% include 'components/head.html' %}
 <body>
+{% from 'macros.jinja' import banner with context %}
+{%  include 'components/navbar.html' %}
 <div>
 	<p>{{ user.name }}</p>
 	<p>{{ user.age }}</p>
