@@ -1,12 +1,28 @@
 {% macro banner(name='banner', value='', url='') -%}
-	<div class="banner-wrapper">
-		<a class="banner-link" href="{{ url }}">
-			<img class="banner-img" src="{{ value }}" alt="{{ name }}">
-		</a>
-	</div>
+    <div class="banner-wrapper">
+        <a class="banner-link" href="{{ url }}">
+            <img class="banner-img" src="{{ value }}" alt="{{ name }}">
+        </a>
+    </div>
 {%- endmacro %}
 
 {% macro input(name, value='', type='text', size=20) -%}
-	<input type="{{ type }}" name="{{ name }}" value="{{
-			value|e }}" size="{{ size }}">
+    <input type="{{ type }}" name="{{ name }}" value="{{ value|e }}" size="{{ size }}">
+{%- endmacro %}
+
+
+
+{% macro icon(icon,value,alt='') -%}
+    <div class="col-4 mb-3"> <!-- Center align the contents -->
+
+        <div class="col">
+            <p class="card-text font-weight-bold h4 text-secondary">{{ value }}</p>
+        </div>
+
+        <div class="col icon-wrapper">
+            <img class="ship-icon h-100"
+                 src="{{ url_for('static', filename='resources/'+icon ) }}"
+                 alt="{{ alt }}"/>
+        </div>
+    </div>
 {%- endmacro %}

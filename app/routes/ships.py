@@ -14,14 +14,18 @@ def create_ship(user_id):
 
     if request.method == POST:
         pass
-    return render_template("create.html", content="components/ship_create.html")
+    return render_template(
+        "create.html", content="components/ship_create.html", user_id=user_id
+    )
 
 
 @ship_pages.route("/edit/<int:ship_id>/<string:user_id>", methods=[GET, POST])
-def create_ship(ship_id, user_id):
+def edit_ship(ship_id, user_id):
     if not verify_is_logged_in():
         return redirect("/login")
 
     if request.method == POST:
         pass
-    return render_template("edit.html", content="components/ship_edit.html")
+    return render_template(
+        "edit.html", content="components/ship_edit.html", user_id=user_id
+    )

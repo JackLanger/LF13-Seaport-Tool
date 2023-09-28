@@ -55,8 +55,9 @@ def login():
 
         service = UserService()
         username = form_data[user]
-        if service.verify_credentials(username, form_data[passw]):
-            resp = make_response(render_template("index.html"))
+        current_user = service.verify_credentials(username, form_data[passw])
+        if current_user:
+            resp = make_response(redirect("/user/" + str(current_user.id)))
             create_cookies(resp, username)
             return resp
 
