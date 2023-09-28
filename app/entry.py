@@ -5,16 +5,26 @@ from validation.login_validation import (
     user,
 )
 
-from flask import Flask, render_template, request, flash, make_response, redirect
+from flask import (
+    Flask,
+    render_template,
+    request,
+    flash,
+    make_response,
+    redirect,
+    jsonify,
+)
 from routes.constants import GET, POST
 from routes.user import user_pages
 from routes.quests import quest_pages
 from routes.ships import ship_pages
+from routes.info import info_pages
 
 app = Flask(__name__, template_folder="../templates", static_folder="../static")
 app.register_blueprint(user_pages, url_prefix="/user")
 app.register_blueprint(quest_pages, url_prefix="/quests")
 app.register_blueprint(ship_pages, url_prefix="/ships")
+app.register_blueprint(info_pages, url_prefix="/info")
 
 
 @app.route("/index")
@@ -72,6 +82,11 @@ def register_user():
         flash(error)
 
     return render_template("register.html")
+
+
+@app.errorhandler(404)
+def resource_not_found(error):
+    return render_template("error.html", error_details=error)
 
 
 if __name__ == "__main__":
