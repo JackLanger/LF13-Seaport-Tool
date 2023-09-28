@@ -17,6 +17,11 @@ def verify_is_logged_in() -> bool:
     return True
 
 
+def expire_existing_cookies(resp):
+    resp.set_cookie(user, "", expires=0)
+    resp.set_cookie(register_cookie, "", expires=0)
+
+
 def create_cookies(resp, username):
     import datetime
 

@@ -14,11 +14,19 @@ from app.routes.validation.login_validation import (
     passw,
     user,
     register_cookie,
+    expire_existing_cookies,
 )
 
 home_pages = Blueprint(
     "home", __name__, static_folder="../../static", template_folder="../../templates"
 )
+
+
+@home_pages.route("/logout")
+def logout():
+    resp = make_response(redirect("/login"))
+    expire_existing_cookies(resp)
+    return resp
 
 
 @home_pages.route("/index")
