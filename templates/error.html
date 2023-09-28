@@ -1,0 +1,12 @@
+{% from 'macros.jinja' import banner with context %}
+{% include 'components/head.html' %}
+<body>
+{% from 'macros.jinja' import banner with context %}
+{%  include 'components/navbar.html' %}
+<div>
+    <p>Something went wrong, please try again later</p>
+    <p>{{ error_details }}</p>
+</div>
+</body>
+{% include 'components/footer.html' %}
+{% include 'components/tail.html' %}
