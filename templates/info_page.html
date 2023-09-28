@@ -1,0 +1,12 @@
+{% from 'macros.jinja' import banner with context %}
+{% include 'components/head.html' %}
+<body>
+{% from 'macros.jinja' import banner with context %}
+{%  include 'components/navbar.html' %}
+<div class="container mt-5">
+{#        {{ url_for('static', filename=page_content) }}#}
+    {% include page_content %}
+</div>
+</body>
+{% include 'components/footer.html' %}
+{% include 'components/tail.html' %}
