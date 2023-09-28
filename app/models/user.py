@@ -1,13 +1,21 @@
+import uuid
 from typing import List
-from .ship import Ship
-from .quest import Quest
+from .ship import Ship, ShipDTO
+from .quest import Quest, QuestDTO
 
 
 class User:
     def __init__(self):
         self.__id = 0
+        self.__name = ""
         self.__quests: List[Quest] = []
         self.__ships: List[Ship] = []
+
+    def getName(self):
+        return self.__name
+
+    def setName(self, value: str):
+        self.__name = value
 
     def getId(self) -> int:
         return self.__id
@@ -47,8 +55,12 @@ class User:
         self.__quests = user_dto.quests
         self.__ships = user_dto.ships
 
+
 class UserDTO:
-    def __init__(self, id: int, quests: List[Quest], ships: List[Ship]):
+    def __init__(
+        self, id: uuid, name: str, quests: List[QuestDTO], ships: List[ShipDTO]
+    ):
         self.id = id
+        self.name = name
         self.quests = quests
         self.ships = ships
