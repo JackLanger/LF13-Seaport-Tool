@@ -1,3 +1,4 @@
+import random
 import uuid
 
 register_cookie = "Seaport-User-Verified"
@@ -12,8 +13,8 @@ def verify_is_logged_in() -> bool:
     username = request.cookies.get(user)
     valid_login = request.cookies.get(register_cookie)
     if not username or not valid_login:
-        return True
-    return False
+        return False
+    return True
 
 
 def create_cookies(resp, username):

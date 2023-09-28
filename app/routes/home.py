@@ -13,6 +13,7 @@ from app.routes.validation.login_validation import (
     create_cookies,
     passw,
     user,
+    register_cookie,
 )
 
 home_pages = Blueprint(
@@ -22,14 +23,15 @@ home_pages = Blueprint(
 
 @home_pages.route("/index")
 def dashboard():
-    if verify_is_logged_in():
+    if not verify_is_logged_in():
         return redirect("/login", code=302)
-    return render_template("index.html")
+    user_id = request.cookies.get(register_cookie)
+    return redirect("/user/" + user_id)
 
 
 @home_pages.route("/")
 def home():
-    if verify_is_logged_in():
+    if not verify_is_logged_in():
         return redirect("/login", code=302)
     return redirect("/index")
 
