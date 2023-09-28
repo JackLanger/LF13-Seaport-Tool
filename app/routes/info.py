@@ -1,7 +1,4 @@
-from flask import Blueprint, redirect, url_for, flash, render_template, request
-
-
-from app.dal.service import UserService
+from flask import Blueprint, flash, render_template, request
 
 info_pages = Blueprint(
     "info", __name__, static_folder="../../static", template_folder="../../templates"

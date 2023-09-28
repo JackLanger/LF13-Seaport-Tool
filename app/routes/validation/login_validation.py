@@ -1,4 +1,3 @@
-import random
 import uuid
 
 user_uid = "Seaport-User-Verified"

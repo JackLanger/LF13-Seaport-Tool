@@ -1,4 +1,5 @@
-from flask import Blueprint, redirect, url_for, flash, render_template, request
+from flask import Blueprint, redirect, render_template, request
+
 from app.routes.constants import GET, POST
 from app.routes.validation.login_validation import verify_is_logged_in
 

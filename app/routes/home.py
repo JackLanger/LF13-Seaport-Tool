@@ -13,7 +13,6 @@ from app.routes.validation.login_validation import (
     create_cookies,
     passw,
     user,
-    user_uid,
     expire_existing_cookies,
 )
 

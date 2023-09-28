@@ -1,17 +1,12 @@
 from flask import (
     Blueprint,
     redirect,
-    url_for,
-    flash,
     render_template,
     request,
     make_response,
 )
 
 from app.dal.service import UserService
-from app.models.quest import Quest
-from app.models.ship import Ship
-from app.models.user import UserDTO
 from app.routes.validation.login_validation import verify_is_logged_in
 
 user_pages = Blueprint(
