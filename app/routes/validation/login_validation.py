@@ -1,25 +1,25 @@
 import random
 import uuid
 
-register_cookie = "Seaport-User-Verified"
+user_uid = "Seaport-User-Verified"
 
 passw = "password"
 user = "username"
 
 
-def verify_is_logged_in() -> bool:
+def verify_is_logged_in() -> str | None:
     from flask import request
 
     username = request.cookies.get(user)
-    valid_login = request.cookies.get(register_cookie)
-    if not username or not valid_login:
-        return False
-    return True
+    user_uid_cookie = request.cookies.get(user_uid)
+    if not username or not user_uid:
+        return None
+    return user_uid_cookie
 
 
 def expire_existing_cookies(resp):
     resp.set_cookie(user, "", expires=0)
-    resp.set_cookie(register_cookie, "", expires=0)
+    resp.set_cookie(user_uid, "", expires=0)
 
 
 def create_cookies(resp, username):
@@ -28,4 +28,4 @@ def create_cookies(resp, username):
     expire_date = datetime.datetime.now()
     expire_date = expire_date + datetime.timedelta(days=1)
     resp.set_cookie(user, username, expires=expire_date)
-    resp.set_cookie(register_cookie, str(uuid.uuid4()), expires=expire_date)
+    resp.set_cookie(user_uid, str(uuid.uuid4()), expires=expire_date)

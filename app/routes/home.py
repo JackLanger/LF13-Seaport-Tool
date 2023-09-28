@@ -13,7 +13,7 @@ from app.routes.validation.login_validation import (
     create_cookies,
     passw,
     user,
-    register_cookie,
+    user_uid,
     expire_existing_cookies,
 )
 
@@ -31,9 +31,9 @@ def logout():
 
 @home_pages.route("/index")
 def dashboard():
-    if not verify_is_logged_in():
+    user_id = verify_is_logged_in()
+    if not user_id:
         return redirect("/login", code=302)
-    user_id = request.cookies.get(register_cookie)
     return redirect("/user/" + user_id)
 
 

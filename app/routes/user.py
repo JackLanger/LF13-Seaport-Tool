@@ -1,7 +1,18 @@
-from flask import Blueprint, redirect, url_for, flash, render_template, request
-
+from flask import (
+    Blueprint,
+    redirect,
+    url_for,
+    flash,
+    render_template,
+    request,
+    make_response,
+)
 
 from app.dal.service import UserService
+from app.models.quest import Quest
+from app.models.ship import Ship
+from app.models.user import UserDTO
+from app.routes.validation.login_validation import verify_is_logged_in
 
 user_pages = Blueprint(
     "user", __name__, static_folder="../../static", template_folder="../../templates"
@@ -16,6 +27,15 @@ def profiles():
     return "select your profile"
 
 
+@user_pages.route("/")
+def home():
+    user_id = verify_is_logged_in()
+    if user_id:
+        resp = make_response(redirect("/user/" + user_id))
+        return resp
+    redirect("/login")
+
+
 @user_pages.route("/profiles/create", methods=[GET, POST])
 def save_profile():
     if request.method == POST:
@@ -26,35 +46,9 @@ def save_profile():
         return render_template("login.html", user=user)
 
 
-@user_pages.route("/")
-def user_view():
-    user = {"name": "jack", "age": 37}
+@user_pages.route("/<string:user_id>")
+def user_view(user_id):
+    # Create a UserDTO instance (you can replace this with your data retrieval logic)
+    service = UserService()
+    user = service.get(user_id)
     return render_template("user.html", user=user)
-
-
-@user_pages.route("/user/register")
-def register_user():
-    if request.method == POST:
-        username = request.form["user"]  # Your form's
-        password = request.form["pass"]
-        passwordConfirm = request.form["passConfirm"]
-        user_service = UserService()
-        error = None
-        if not username:
-            error = "User name is required"
-        elif not password or not passwordConfirm:
-            error = "Password is required"
-        elif password != passwordConfirm:
-            error = "Password does not match confirmation"
-
-        if error is None:
-            try:
-                user_service.register_new_user(username, password)
-            except user_service.InvalidUserDetailsError:
-                error = f"User {username} is already registered"
-            else:
-                return redirect(url_for("/user/login"))
-
-        flash(error)
-
-    return render_template("register.html")
