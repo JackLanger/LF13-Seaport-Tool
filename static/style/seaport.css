@@ -1,0 +1,12 @@
+footer{
+    position: absolute;
+    bottom:0;
+}
+.banner-wrapper{
+    padding-top:5vh;
+    padding-bottom: 5vh;
+
+    margin-top:2vh;
+    margin-bottom: 2vh;
+    background: deeppink;
+}
