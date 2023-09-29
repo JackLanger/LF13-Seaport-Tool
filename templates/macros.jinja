@@ -26,3 +26,47 @@
         </div>
     </div>
 {%- endmacro %}
+
+{% macro ship_card(ship,user) -%}
+
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-body text-center"> <!-- Center align all contents -->
+
+
+                <div class="row col-12 align-items-center">
+                    {% if ship.level == 1 %}
+                        <img src="{{ url_for('static', filename='resources/level-1-ship.png') }}"
+                             class="card-img-top align-self-center w-25" alt="Ship Image">
+                    {% else %}
+                        <img src="{{ url_for('static', filename='resources/level-3-ship.png') }}"
+                             class="card-img-top w-25" alt="Ship Image">
+                    {% endif %}
+                </div>
+
+                <div class="row align-items-center">
+                    <div class="col-12">
+                        <h5 class="card-title">{{ ship.name }}</h5>
+                    </div>
+                </div>
+
+                <div class="container">
+                    <div class="row">
+                        {{ icon('crate.png', ship.capacity,'capacity') }}
+                        {{ icon('sailor.png', ship.sailors,'sailors') }}
+                        {{ icon('level.png', ship.level,'level') }}
+                    </div>
+                </div>
+
+                <div class="row align-items-center m-1">
+                    <div class="col-12 mt-3">
+                        <a href="/ships/edit/{{ ship.id }}/{{ user.id }}" class="btn btn-primary">Edit</a>
+                        <a href="/ships/delete/{{ ship.id }}/{{ user.id }}" class="btn btn-danger">Delete</a>
+                        <a href="/ships/level-up/{{ ship.id }}/{{ user.id }}" class="btn " >Level Up</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{%- endmacro %}
