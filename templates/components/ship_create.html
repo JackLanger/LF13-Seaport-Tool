@@ -1,13 +1,30 @@
-<h1 class="mt-4">Create a New Ship</h1>
-<form method="POST" action="/create-ship">
+<h1>Create Ship</h1>
+<form action="/ship/create/{{ user_id }}" method="POST">
+
+    <!-- Ship Name -->
     <div class="form-group">
-        <label for="name">Ship Name:</label>
+        <label for="name">Name:</label>
         <input type="text" class="form-control" id="name" name="name" required>
     </div>
+
+    <!-- Capacity -->
     <div class="form-group">
-        <label for="type">Ship Type:</label>
-        <input type="text" class="form-control" id="type" name="type" required>
+        <label for="capacity">Capacity:</label>
+        <input type="number" class="form-control" id="capacity" name="capacity" required>
     </div>
+
+    <!-- Sailors -->
+    <div class="form-group">
+        <label for="sailors">Sailors:</label>
+        <input type="number" class="form-control" id="sailors" name="sailors" required>
+    </div>
+
+    <!-- Level (Optional) -->
+    <div class="form-group">
+        <label for="level">Level:</label>
+        <input type="number" class="form-control" id="level" name="level">
+    </div>
+
+    <!-- Submit Button -->
     <button type="submit" class="btn btn-primary">Create Ship</button>
-    <a href="/user/{{ user_id }}" class="btn btn-outline-danger"> Back </a>
 </form>
