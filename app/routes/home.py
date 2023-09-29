@@ -45,18 +45,23 @@ def home():
 
 @home_pages.route("/login", methods=[GET, POST])
 def login():
+    """
+    Login form to verify user credentials. User will be redirected to user dashboard on valid credentials.
+    """
     if request.method == POST:
         error = "The credentials provided did not match."
         form_data = request.form
         if not form_data[user]:
             error = "You have to supply a username in order to login."
+
         from app.dal.service import UserService
 
         service = UserService()
         username = form_data[user]
         current_user = service.verify_credentials(username, form_data[passw])
+
         if current_user:
-            resp = make_response(redirect("/user/" + str(current_user.id)))
+            resp = make_response(redirect("/user/%s" % current_user.id))
             create_cookies(resp, username)
             return resp
 
@@ -74,11 +79,11 @@ def register_user():
         email = request.form["email"]
         error = ""
         service = UserService()
-
         if not password or not username or not email:
             error = "You have to fill in all fields in order to create an account."
-        elif service.register_new_user(username, password, email):
-            resp = make_response(render_template("index.html"))
+        user_dto = service.register_new_user(username, password, email)
+        if user:
+            resp = make_response(redirect("/user/%s" % user_dto.id))
             create_cookies(resp, username)
             return resp
 
