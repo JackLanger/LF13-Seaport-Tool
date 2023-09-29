@@ -17,11 +17,6 @@ GET = "GET"
 POST = "POST"
 
 
-@user_pages.route("/profiles")
-def profiles():
-    return "select your profile"
-
-
 @user_pages.route("/")
 def home():
     user_id = verify_is_logged_in()
@@ -31,19 +26,9 @@ def home():
     redirect("/login")
 
 
-@user_pages.route("/profiles/create", methods=[GET, POST])
-def save_profile():
-    if request.method == POST:
-        result = request.form
-        return render_template("login.html", result=result)
-    else:
-        user = {"name": "jack", "age": 37}
-        return render_template("login.html", user=user)
-
-
 @user_pages.route("/<string:user_id>")
 def user_view(user_id):
     # Create a UserDTO instance (you can replace this with your data retrieval logic)
     service = UserService()
-    user = service.get(user_id)
+    user = service.get_by_id(user_id)
     return render_template("user.html", user=user)
