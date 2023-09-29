@@ -13,6 +13,12 @@ class ShipService:
         ships = [ShipDTO(1, "Ship 1", 1, 5, 1), ShipDTO(2, "Ship 2", 10, 15, 5)]
         return ships[ship_id - 1]
 
+    def create_new(self, ShipDto) -> ShipDTO:
+        pass
+
+    def update(self, ShipDto):
+        pass
+
 
 class UserService:
     user = UserDTO(
@@ -35,5 +41,8 @@ class UserService:
     def verify_credentials(self, username: str, password: str) -> UserDTO:
         return self.user
 
-    def get(self, user_id):
+    def update(self, user: UserDTO):
+        pass
+
+    def get_by_id(self, user_id):
         return self.user
