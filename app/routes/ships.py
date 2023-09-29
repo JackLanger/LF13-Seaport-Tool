@@ -37,6 +37,11 @@ def edit_ship(ship_id: int, user_id: str):
     )
 
 
+@ship_pages.route("/level-up/<int:ship_id>/<string:user_id>")
+def level_up(ship_id, user_id):
+    return redirect("/user/%s" % user_id)
+
+
 @ship_pages.route("/delete/<int:ship_id>/<string:user_id>")
 def delete_ship(ship_id: int, user_id: str):
     return redirect("/user")
