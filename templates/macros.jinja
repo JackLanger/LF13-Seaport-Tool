@@ -60,9 +60,9 @@
 
                 <div class="row align-items-center m-1">
                     <div class="col-12 mt-3">
-                        <a href="/ships/edit/{{ ship.id }}/{{ user.id }}" class="btn btn-primary">Edit</a>
-                        <a href="/ships/delete/{{ ship.id }}/{{ user.id }}" class="btn btn-danger">Delete</a>
-                        <a href="/ships/level-up/{{ ship.id }}/{{ user.id }}" class="btn " >Level Up</a>
+                        <a href="/ships/edit/{{ ship.id }}/{{ user.id }}" class="btn btn-primary rounded-circle p-2 m-1"><img src="{{ url_for('static',filename="resources/pen.svg") }}" class="btn-icon" alt="edit"></a>
+                        <a href="/ships/delete/{{ ship.id }}/{{ user.id }}" class="btn btn-danger rounded-circle p-2 m-1"><img src="{{ url_for('static',filename="resources/can.svg") }}" class="btn-icon" alt="delete"></a>
+                        <a href="/ships/level-up/{{ ship.id }}/{{ user.id }}" class="btn btn-warning rounded-circle p-2 m-1" ><img src="{{ url_for('static',filename="resources/add-square.svg") }}" class="btn-icon" alt="delete"></a>
                     </div>
                 </div>
             </div>

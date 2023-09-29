@@ -35,3 +35,8 @@ footer {
 .icon-wrapper {
     max-height: 50px;
 }
+
+.btn-icon{
+    max-height: 25px;
+    max-width: 25px;
+}
