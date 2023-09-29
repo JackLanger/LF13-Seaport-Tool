@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import uuid
 
 user_uid = "Seaport-User-Verified"

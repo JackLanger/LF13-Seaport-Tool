@@ -5,6 +5,15 @@ from app.models.ship import ShipDTO
 from app.models.user import UserDTO
 
 
+class ShipService:
+    def __int__(self):
+        pass
+
+    def get_by_id(self, ship_id) -> ShipDTO:
+        ships = [ShipDTO(1, "Ship 1", 1, 5, 1), ShipDTO(2, "Ship 2", 10, 15, 5)]
+        return ships[ship_id - 1]
+
+
 class UserService:
     user = UserDTO(
         uuid.uuid4(),

@@ -26,7 +26,7 @@ def profiles():
 def home():
     user_id = verify_is_logged_in()
     if user_id:
-        resp = make_response(redirect("/user/" + user_id))
+        resp = make_response(redirect("/user/%s" % user_id))
         return resp
     redirect("/login")
 
