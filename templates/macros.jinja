@@ -11,7 +11,7 @@
 {%- endmacro %}
 
 
-
+{# a single icon used in the ship cards #}
 {% macro icon(icon,value,alt='') -%}
     <div class="col-4 mb-3"> <!-- Center align the contents -->
 
@@ -27,6 +27,8 @@
     </div>
 {%- endmacro %}
 
+{# a ship card containing functionality for upgrading , deleting and editing #}
+
 {% macro ship_card(ship,user) -%}
 
     <div class="col-md-4 mb-4">
@@ -37,6 +39,9 @@
                 <div class="row col-12 align-items-center">
                     {% if ship.level == 1 %}
                         <img src="{{ url_for('static', filename='resources/level-1-ship.png') }}"
+                             class="card-img-top align-self-center w-25" alt="Ship Image">
+                    {% elif ship.level == 5 %}
+                        <img src="{{ url_for('static', filename='resources/level-5-ship.svg') }}"
                              class="card-img-top align-self-center w-25" alt="Ship Image">
                     {% else %}
                         <img src="{{ url_for('static', filename='resources/level-3-ship.png') }}"
@@ -52,17 +57,25 @@
 
                 <div class="container">
                     <div class="row">
-                        {{ icon('crate.png', ship.capacity,'capacity') }}
-                        {{ icon('sailor.png', ship.sailors,'sailors') }}
-                        {{ icon('level.png', ship.level,'level') }}
+                        {{ icon('crate.svg', ship.capacity,'capacity') }}
+                        {{ icon('sailor-pirate.svg', ship.sailors,'sailors') }}
+                        {{ icon('stars-level.svg', ship.level,'level') }}
                     </div>
                 </div>
 
                 <div class="row align-items-center m-1">
                     <div class="col-12 mt-3">
-                        <a href="/ships/edit/{{ ship.id }}/{{ user.id }}" class="btn btn-primary rounded-circle p-2 m-1"><img src="{{ url_for('static',filename="resources/pen.svg") }}" class="btn-icon" alt="edit"></a>
-                        <a href="/ships/delete/{{ ship.id }}/{{ user.id }}" class="btn btn-danger rounded-circle p-2 m-1"><img src="{{ url_for('static',filename="resources/can.svg") }}" class="btn-icon" alt="delete"></a>
-                        <a href="/ships/level-up/{{ ship.id }}/{{ user.id }}" class="btn btn-warning rounded-circle p-2 m-1" ><img src="{{ url_for('static',filename="resources/add-square.svg") }}" class="btn-icon" alt="delete"></a>
+                        <a href="/ships/edit/{{ ship.id }}/{{ user.id }}"
+                           class="btn btn-primary rounded-circle p-2 m-1"><img
+                                src="{{ url_for('static',filename="resources/pen.svg") }}" class="btn-icon" alt="edit"></a>
+                        <a href="/ships/delete/{{ ship.id }}/{{ user.id }}"
+                           class="btn btn-danger rounded-circle p-2 m-1"><img
+                                src="{{ url_for('static',filename="resources/can.svg") }}" class="btn-icon"
+                                alt="delete"></a>
+                        <a href="/ships/level-up/{{ ship.id }}/{{ user.id }}"
+                           class="btn btn-warning rounded-circle p-2 m-1"><img
+                                src="{{ url_for('static',filename="resources/upgrade.svg") }}" class="btn-icon"
+                                alt="delete"></a>
                     </div>
                 </div>
             </div>
