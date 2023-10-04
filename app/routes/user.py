@@ -31,4 +31,6 @@ def user_view(user_id):
     # Create a UserDTO instance (you can replace this with your data retrieval logic)
     service = UserService()
     user = service.get_by_id(user_id)
-    return render_template("user.html", user=user)
+    return render_template(
+        "index.html", page_content="components/user_dashboard.html", user=user
+    )

@@ -1,0 +1,15 @@
+<div class="container">
+    <h2>User ID: {{ user.name }}</h2>
+    <p>User ID: {{ user.id }}</p>
+    <h3>{{ user.profile }}</h3>
+
+    <h2>Ships</h2>
+    <div class="row">
+        {% for ship in user.ships %}
+            {{ ship_card(ship,user) }}
+        {% endfor %}
+    </div>
+    <div>
+        <a href="/ships/create/{{ user.id }}" class="btn btn-primary">Add new Ship</a>
+    </div>
+</div>
