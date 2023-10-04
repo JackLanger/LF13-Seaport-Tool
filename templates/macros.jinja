@@ -74,7 +74,8 @@
                                 alt="delete"></a>
                         <a href="/ships/level-up/{{ ship.id }}/{{ user.id }}"
                            class="btn btn-warning rounded-circle p-2 m-1"><img
-                                src="{{ url_for('static',filename="resources/upgrade.svg") }}" class="btn-icon"
+                                src="{{ url_for('static',filename="resources/upgrade.svg") }}"
+                                class="btn-icon"
                                 alt="delete"></a>
                     </div>
                 </div>
@@ -82,4 +83,11 @@
         </div>
     </div>
 
+{%- endmacro %}
+
+
+{% macro round_icon(icon,alt) -%}
+    <img class="btn-icon"
+         src="{{ url_for('static', filename='resources/'+icon ) }}"
+         alt="{{ alt }}"/>
 {%- endmacro %}
