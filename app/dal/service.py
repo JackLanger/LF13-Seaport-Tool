@@ -16,7 +16,7 @@ class ShipService:
     def create_new(self, ShipDto) -> ShipDTO:
         pass
 
-    def update(self, ShipDto):
+    def save(self, ShipDto):
         pass
 
 
@@ -41,7 +41,7 @@ class UserService:
     def verify_credentials(self, username: str, password: str) -> UserDTO:
         return self.user
 
-    def update(self, user: UserDTO):
+    def save(self, user: UserDTO):
         pass
 
     def get_by_id(self, user_id):
