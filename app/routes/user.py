@@ -21,16 +21,12 @@ POST = "POST"
 def home():
     user_id = verify_is_logged_in()
     if user_id:
-        resp = make_response(redirect("/user/%s" % user_id))
+        service = UserService()
+        user = service.get_by_id(user_id)
+        resp = make_response(
+            render_template(
+                "index.html", page_content="components/user_dashboard.html", user=user
+            )
+        )
         return resp
-    redirect("/login")
-
-
-@user_pages.route("/<string:user_id>")
-def user_view(user_id):
-    # Create a UserDTO instance (you can replace this with your data retrieval logic)
-    service = UserService()
-    user = service.get_by_id(user_id)
-    return render_template(
-        "index.html", page_content="components/user_dashboard.html", user=user
-    )
+    return redirect("/login")

@@ -28,19 +28,11 @@ def logout():
     return resp
 
 
-@home_pages.route("/index")
-def dashboard():
-    user_id = verify_is_logged_in()
-    if not user_id:
-        return redirect("/login", code=302)
-    return redirect("/user/" + user_id)
-
-
 @home_pages.route("/")
 def home():
     if not verify_is_logged_in():
         return redirect("/login", code=302)
-    return redirect("/index")
+    return redirect("/user")
 
 
 @home_pages.route("/login", methods=[GET, POST])
@@ -61,7 +53,7 @@ def login():
         current_user = service.verify_credentials(username, form_data[passw])
 
         if current_user:
-            resp = make_response(redirect("/user/%s" % current_user.id))
+            resp = make_response(redirect("/user"))
             create_cookies(resp, username)
             return resp
 
@@ -83,7 +75,7 @@ def register_user():
             error = "You have to fill in all fields in order to create an account."
         user_dto = service.register_new_user(username, password, email)
         if user:
-            resp = make_response(redirect("/user/%s" % user_dto.id))
+            resp = make_response(redirect("/user"))
             create_cookies(resp, username)
             return resp
 

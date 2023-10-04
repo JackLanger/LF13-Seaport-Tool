@@ -2,7 +2,7 @@ import uuid
 
 from flask import Blueprint, redirect, render_template, request
 
-from app.dal.service import ShipService
+from app.dal.service import ShipService, UserService
 from app.models.ship import ShipDTO
 from app.routes.constants import GET, POST
 from app.routes.validation.login_validation import verify_is_logged_in
@@ -11,6 +11,9 @@ from app.routes.constants import name, capacity, level, sailors
 ship_pages = Blueprint(
     "ships", __name__, static_folder="../../static", template_folder="../../templates"
 )
+
+user_service = UserService()
+ship_service = ShipService()
 
 
 def create_ship_dto(form):
@@ -22,58 +25,65 @@ def create_ship_dto(form):
 
 
 def save_ship_dto(ship: ShipDTO):
-    ship_service = ShipService()
     return ship_service.create_new(ship)
 
 
-def update_user(user_id, ship: ShipDTO):
-    from app.dal.service import UserService
-
-    user_service = UserService()
-    user_dto = user_service.get_by_id(user_id)
-    user_dto.ships += ship
-    user_service.update(user_dto)
+def update_user(user, ship: ShipDTO):
+    user.ships += ship
+    user_service.save(user)
 
 
-@ship_pages.route("/create/<string:user_id>", methods=[GET, POST])
-def create_ship(user_id):
-    if not verify_is_logged_in():
+@ship_pages.route("/create", methods=[GET, POST])
+def create_ship():
+    user = verify_is_logged_in()
+    user = user_service.get_by_id(user)
+    if not user:
         return redirect("/login")
 
     if request.method == POST:
         ship = save_ship_dto(create_ship_dto(request.form))
-        update_user(user_id, ship)
+        update_user(user, ship)
 
-    return render_template(
-        "create.html", content="components/ship_create.html", user_id=user_id
-    )
+    return render_template("create.html", content="components/ship_create.html")
 
 
-@ship_pages.route("/edit/<int:ship_id>/<string:user_id>", methods=[GET, POST])
+@ship_pages.route("/edit/<int:ship_id>/", methods=[GET, POST])
 def edit_ship(ship_id: int, user_id: str):
     if not verify_is_logged_in():
         return redirect("/login")
-    ship_service = ShipService()
     ship = ship_service.get_by_id(ship_id)
     if request.method == POST:
         ship.name = request.form[name]
         ship.capacity = request.form[capacity]
         ship.sailors = request.form[sailors]
         ship.level = request.form[level]
-        ship_service.update(ship)
+        ship_service.save(ship)
 
-        return redirect("/user/%s" % user_id)
+        return redirect("/user")
 
     return render_template(
         "edit.html", content="components/ship_edit.html", user_id=user_id, ship=ship
     )
 
 
-@ship_pages.route("/level-up/<int:ship_id>/<string:user_id>")
-def level_up(ship_id, user_id):
-    return redirect("/user/%s" % user_id)
+@ship_pages.route("/level-up/<int:ship_id>")
+def level_up(ship_id):
+    user = verify_is_logged_in()
+    user = user_service.get_by_id(user)
+    if user:
+        ship = ship_service.get_by_id(ship_id)
+        ship.level += 1
+        ship_service.save(ship)
+        return redirect("/user")
+    return redirect("/login")
 
 
-@ship_pages.route("/delete/<int:ship_id>/<string:user_id>")
+@ship_pages.route("/delete/<int:ship_id>")
 def delete_ship(ship_id: int, user_id: str):
+    user = verify_is_logged_in()
+    user = user_service.get_by_id()
+    if user:
+        ship = ship_service.get_by_id(ship_id)
+        user.ships.remove(ship)
+        user_service.save(user)
     return redirect("/user")
