@@ -1,3 +1,4 @@
+{% from 'macros.jinja' import round_icon with context %}
 <div class="container-fluid">
     <div class="row">
         <!-- Sidebar for Quests -->
@@ -8,14 +9,14 @@
                     <thead>
                     <tr>
                         <th>Title</th>
-                        <th>Resources</th>
                     </tr>
                     </thead>
                     <tbody>
                     {% for quest in user.quests %}
                     <tr>
                         <td>{{ quest.title }}</td>
-                        <td>{{ quest.resources | join(', ') }}</td>
+                        <td><a href="/quests/edit/{{quest.id}}">{{ round_icon('pen.svg','delete') }}</a></td>
+                        <td><a href="/quests/delete/{{quest.id}}">{{ round_icon('can.svg','delete') }}</a></td>
                     </tr>
                     {% endfor %}
                     </tbody>
