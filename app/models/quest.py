@@ -5,7 +5,7 @@ from typing import List
 class Resource:
     def __init__(self, name: str, amount: int = 0):
         self.name = name
-        self.amount: int = 0
+        self.amount: int = amount
 
 
 class Quest:
