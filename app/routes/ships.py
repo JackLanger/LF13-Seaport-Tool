@@ -47,8 +47,8 @@ def create_ship():
     return render_template("create.html", content="components/ship_create.html")
 
 
-@ship_pages.route("/edit/<int:ship_id>/", methods=[GET, POST])
-def edit_ship(ship_id: int, user_id: str):
+@ship_pages.route("/edit/<int:ship_id>", methods=[GET, POST])
+def edit_ship(ship_id: int):    # todo: this is not being called for id 1
     if not verify_is_logged_in():
         return redirect("/login")
     ship = ship_service.get_by_id(ship_id)
@@ -62,7 +62,7 @@ def edit_ship(ship_id: int, user_id: str):
         return redirect("/user")
 
     return render_template(
-        "edit.html", content="components/ship_edit.html", user_id=user_id, ship=ship
+        "edit.html", content="components/ship_edit.html", ship=ship
     )
 
 
@@ -79,11 +79,12 @@ def level_up(ship_id):
 
 
 @ship_pages.route("/delete/<int:ship_id>")
-def delete_ship(ship_id: int, user_id: str):
+def delete_ship(ship_id: int):
     user = verify_is_logged_in()
-    user = user_service.get_by_id()
+    user = user_service.get_by_id(user)
     if user:
-        ship = ship_service.get_by_id(ship_id)
-        user.ships.remove(ship)
+        user.ships[:] = (s for s in user.ships if s.id != ship_id)
+        ship_service.delete(ship_id)
         user_service.save(user)
+
     return redirect("/user")
