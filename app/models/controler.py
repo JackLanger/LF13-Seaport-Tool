@@ -6,10 +6,11 @@ from app.dal.dal import Dal
 
 class Controler:
     def __init__(self) -> None:
-        self.__userlist = []
-        self.__shiplist = []
-        self.__questlist = []
+        self.__userlist = [] #into userclass
+        self.__shiplist = [] #into shipclass
+        self.__questlist = [] #into questclass
         
+    # into respective classes
     def getUserList(self):
         return self.__userlist
     
@@ -36,27 +37,21 @@ class Controler:
         
     def removeQuest(self,quest):
         self.__questlist.remove(quest)
-        
+    
+    # extend for multiple savingtypes
     def saveList(list):
         Dal.serialize(list)
     
     def loadList():
         return Dal.deSerialize()
     
+    # suply questsolver with what it needs
     def solver():
         pass
     
+    # placeholder to speak to view
     def sendToView():
         pass
     
     def getFromView():
-        pass
-    
-    def createUser():
-        pass
-    
-    def createQuest():
-        pass
-    
-    def createShip():
         pass
