@@ -56,7 +56,7 @@ app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(hours=1)
 #     return False
 
 
-@app.errorhandler(404)
+@app.errorhandler(404 | 500)
 def resource_not_found(error):
     return render_template(
         "index.html", page_content="components/error.html", error_details=error
