@@ -2,7 +2,8 @@
 <body>
 <div class="container mt-5">
     <h1>Create Quest</h1>
-    <form action="/create_quest" method="POST">
+    <!--    action="/quests/create" method="POST"-->
+    <form id="createQuestForm" method="POST" action="/quests/create">
         <div class="form-group">
             <label for="name">Quest Name:</label>
             <input type="text" id="name" name="name" class="form-control" required>
@@ -17,7 +18,8 @@
             <div class="resource-field">
                 <div class="form-row">
                     <div class="form-group col-md-6">
-                        <input type="text" name="resource_name" class="form-control" placeholder="Resource Name" required>
+                        <input type="text" name="resource_name" class="form-control" placeholder="Resource Name"
+                               required>
                     </div>
                     <div class="form-group col-md-4">
                         <input type="number" name="resource_amount" class="form-control" placeholder="Amount" required>
@@ -33,7 +35,7 @@
             {{ round_icon('add-square.svg','Add new') }}
         </button>
 
-        <button type="submit" class="btn btn-primary mt-3 float-right">Create Quest</button>
+        <button type="submit" class="btn btn-primary mt-3 float-right" onclick="sendFormData()">Create Quest</button>
     </form>
 </div>
 
@@ -68,4 +70,35 @@
         const resourceField = button.parentNode.parentNode.parentNode;
         resourceFields.removeChild(resourceField);
     }
+
+    document.getElementById('createQuestForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+        const formData = new FormData(document.getElementById('createQuestForm'));
+        const resources = [];
+
+        // Collect resource data
+        document.querySelectorAll('.resource-field').forEach(function (field) {
+            const resourceName = field.querySelector('input[name="resource_name"]').value;
+            const resourceAmount = field.querySelector('input[name="resource_amount"]').value;
+            resources.push({ name: resourceName, amount: resourceAmount });
+        });
+
+        formData.append('resources', JSON.stringify(resources));
+
+        // Send the POST request
+        fetch('/quests/create', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                // Handle the response here (e.g., show a success message)
+                console.log(data);
+            })
+            .catch(error => {
+                // Handle errors here
+                console.error(error);
+            });
+    });
+
 </script>
