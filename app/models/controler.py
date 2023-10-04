@@ -6,44 +6,13 @@ from app.dal.dal import Dal
 
 class Controler:
     def __init__(self) -> None:
-        self.__userlist = [] #into userclass
-        self.__shiplist = [] #into shipclass
-        self.__questlist = [] #into questclass
-        
-    # into respective classes
-    def getUserList(self):
-        return self.__userlist
+        pass
     
-    def getShipList(self):
-        return self.__shiplist
+    def save(data):
+        Dal.serialize(data)
     
-    def getQuestList(self):
-        return self.__questlist
-    
-    def addUser(self,user):
-        self.__userlist.append(user)
-        
-    def addShip(self,ship):
-        self.__shiplist.append(ship)
-        
-    def addQuest(self,quest):
-        self.__questlist.append(quest)
-        
-    def removeUser(self,user):
-        self.__userlist.remove(user)
-        
-    def removeShip(self,ship):
-        self.__shiplist.remove(ship)
-        
-    def removeQuest(self,quest):
-        self.__questlist.remove(quest)
-    
-    # extend for multiple savingtypes
-    def saveList(list):
-        Dal.serialize(list)
-    
-    def loadList():
-        return Dal.deSerialize()
+    def load(data):
+        return Dal.deSerialize(data)
     
     # suply questsolver with what it needs
     def solver():
