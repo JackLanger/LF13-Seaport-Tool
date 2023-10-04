@@ -65,18 +65,31 @@
 
                 <div class="row align-items-center m-1">
                     <div class="col-12 mt-3">
-                        <a href="/ships/edit/{{ ship.id }}/{{ user.id }}"
-                           class="btn btn-primary rounded-circle p-2 m-1"><img
-                                src="{{ url_for('static',filename="resources/pen.svg") }}" class="btn-icon" alt="edit"></a>
-                        <a href="/ships/delete/{{ ship.id }}/{{ user.id }}"
-                           class="btn btn-danger rounded-circle p-2 m-1"><img
-                                src="{{ url_for('static',filename="resources/can.svg") }}" class="btn-icon"
-                                alt="delete"></a>
-                        <a href="/ships/level-up/{{ ship.id }}/{{ user.id }}"
-                           class="btn btn-warning rounded-circle p-2 m-1"><img
+
+                        <a href="/ships/edit/{{ ship.id }}"
+                           class="btn btn-primary rounded-circle p-2 m-1">
+                            <img
+                                src="{{ url_for('static',filename="resources/pen.svg") }}"
+                                class="btn-icon"
+                                alt="edit">
+                        </a>
+
+                        <a href="/ships/delete/{{ ship.id }}"
+                           class="btn btn-danger rounded-circle p-2 m-1">
+                            <img
+                                src="{{ url_for('static',filename="resources/can.svg") }}"
+                                class="btn-icon"
+                                alt="delete">
+                        </a>
+
+                        <a href="/ships/level-up/{{ ship.id }}"
+                           class="btn btn-warning rounded-circle p-2 m-1">
+                            <img
                                 src="{{ url_for('static',filename="resources/upgrade.svg") }}"
                                 class="btn-icon"
-                                alt="delete"></a>
+                                alt="level-up">
+                        </a>
+
                     </div>
                 </div>
             </div>
