@@ -1,5 +1,4 @@
-.idea/
-.idea/seaport.iml
+.idea/*
 # dotenv
 .env
 
