@@ -1,0 +1,36 @@
+<h1>Edit Ship</h1>
+<form action="/ships/edit/{{ ship.id }}" method="POST">
+    <!-- Ship ID (Read-only) -->
+    <div class="form-group">
+        <label for="ship_id">Ship ID:</label>
+        <input type="text" class="form-control" id="ship_id" name="ship_id" value="{{ ship.id }}" readonly>
+    </div>
+
+    <!-- Ship Name -->
+    <div class="form-group">
+        <label for="name">Name:</label>
+        <input type="text" class="form-control" id="name" name="name" value="{{ ship.name }}">
+    </div>
+
+    <!-- Capacity -->
+    <div class="form-group">
+        <label for="capacity">Capacity:</label>
+        <input type="number" class="form-control" id="capacity" name="capacity" value="{{ ship.capacity }}">
+    </div>
+
+    <!-- Sailors -->
+    <div class="form-group">
+        <label for="sailors">Sailors:</label>
+        <input type="number" class="form-control" id="sailors" name="sailors" value="{{ ship.sailors }}">
+    </div>
+
+    <!-- Level (Optional) -->
+    <div class="form-group">
+        <label for="level">Level:</label>
+        <input type="number" class="form-control" id="level" name="level" value="{{ ship.level }}">
+    </div>
+
+    <!-- Submit Button -->
+    <button type="submit" class="btn btn-primary">Update Ship</button>
+    <a href="/user" class="btn btn-secondary">Back</a>
+</form>

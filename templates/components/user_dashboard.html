@@ -1,0 +1,49 @@
+{% from 'macros.jinja' import round_icon with context %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar for Quests -->
+        <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+            <div class="position-sticky">
+                <h1>View Quests</h1>
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Title</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for quest in user.quests %}
+                    <tr>
+                        <td>{{ quest.title }}</td>
+                        <td><a href="/quests/edit/{{quest.id}}">{{ round_icon('pen.svg','delete') }}</a></td>
+                        <td><a href="/quests/delete/{{quest.id}}">{{ round_icon('can.svg','delete') }}</a></td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                <div>
+                    <a href="/quests/create" class="btn btn-primary">New Quest</a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+            <div class="container">
+                <h2>User ID: {{ user.name }}</h2>
+                <p>User ID: {{ user.id }}</p>
+                <h3>{{ user.profile }}</h3>
+
+                <h2>Ships</h2>
+                <div class="row">
+                    {% for ship in user.ships %}
+                    {{ ship_card(ship, user) }}
+                    {% endfor %}
+                </div>
+                <div>
+                    <a href="/ships/create" class="btn btn-primary">Add New Ship</a>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>

@@ -1,9 +1,10 @@
 {% from 'macros.jinja' import banner with context %}
 {% include 'components/head.html' %}
 <body>
-<div>
-	<p>{{ user.name }}</p>
-	<p>{{ user.age }}</p>
+{% from 'macros.jinja' import banner with context %}
+{%  include 'components/navbar.html' %}
+<div class="container mt-5">
+    {% include page_content %}
 </div>
 </body>
 {% include 'components/footer.html' %}

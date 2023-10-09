@@ -1,0 +1,17 @@
+<h1>View Quests</h1>
+<table>
+    <tr>
+        <th>Title</th>
+        <th>Resources</th>
+    </tr>
+    {% for quest in user.quests %}
+    <tr>
+        <td>{{ quest.title }}</td>
+        <td>{{ quest.resources | join(', ') }}</td>
+    </tr>
+    {% endfor %}
+</table>
+<br>
+<div>
+    <a href="/quests/create" class="btn btn-primary">new Quest</a>
+</div>
