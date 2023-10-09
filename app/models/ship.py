@@ -1,8 +1,11 @@
 class Ship:
+  
+    shipList = []
     def __init__(self, name: str = ""):
         self.__name = name
         self.__capacity = 0
         self.__sailors = 0
+        self.shipList.append(self)
 
     def getName(self) -> str:
         return self.__name

@@ -9,10 +9,12 @@ class Resource:
 
 
 class Quest:
+    questList = []
     def __init__(self, title: str = ""):
         self.__title = title
         self.__resources = []
         self.__amount = 0
+        self.questList.append(self)
 
     def getResource(self) -> str:
         return self.__resources
@@ -35,6 +37,6 @@ class Quest:
 
 
 class QuestDTO:
-    def __init__(self, title: str, resource: List[Resource]):
+    def __init__(self, title: str, resources: List[Resource]):
         self.title = title
         self.resource = resources
