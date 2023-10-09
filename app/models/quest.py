@@ -1,7 +1,9 @@
 class Quest:
+    questList = []
     def __init__(self):
         self.__resource = ""
         self.__amount = 0
+        self.questList.append(self)
 
     def getResource(self) -> str:
         return self.__resource
