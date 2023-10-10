@@ -10,20 +10,11 @@ class QuestProcessor:
         self.__ships = ships
         self.__quest = quest
 
-    def get_algorithm_type(self) -> AlgorithmType:
-        return self.__algorithm_type
-
-    def get_ships(self) -> List[Ship]:
-        return self.__ships
-
-    def get_quest(self) -> Quest:
-        return self.__quest
-
-    def process_quest(self) -> None:
+    def process_quest(self):
         if self.__algorithm_type == AlgorithmType.TIME_CRITICAL:
-            self.time_critical_algorithm()
+            return self.time_critical_algorithm()
         elif self.__algorithm_type == AlgorithmType.CAPACITY_CRITICAL:
-            self.capacity_critical_algorithm()
+            return self.capacity_critical_algorithm()
         else:
             raise ValueError("Invalid algorithm type.")
 
