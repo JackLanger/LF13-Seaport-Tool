@@ -1,29 +1,42 @@
+from importlib import resources
+from typing import List
+
+
+class Resource:
+    def __init__(self, name: str, amount: int = 0):
+        self.name = name
+        self.amount: int = amount
+
+
 class Quest:
-    def __init__(self):
-        self.__resource = ""
+    questList = []
+    def __init__(self, title: str = ""):
+        self.__title = title
+        self.__resources = []
         self.__amount = 0
+        self.questList.append(self)
 
     def getResource(self) -> str:
-        return self.__resource
+        return self.__resources
 
     def getAmount(self) -> int:
         return self.__amount
 
     def setResource(self, res: str):
-        self.__resource = res
+        self.__resources = res
 
     def setAmount(self, amt: int):
         self.__amount = amt
 
     def to_dto(self):
-        return QuestDTO(resource=self.__resource, amount=self.__amount)
+        return QuestDTO(resource=self.__resources, amount=self.__amount)
 
     def update_from_dto(self, quest_dto):
-        self.__resource = quest_dto.resource
+        self.__resources = quest_dto.resource
         self.__amount = quest_dto.amount
 
 
 class QuestDTO:
-    def __init__(self, resource: str, amount: int):
-        self.resource = resource
-        self.amount = amount
+    def __init__(self, title: str, resources: List[Resource]):
+        self.title = title
+        self.resource = resources

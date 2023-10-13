@@ -1,9 +1,11 @@
-
 class Ship:
-    def __init__(self):
-        self.__name = ""
+  
+    shipList = []
+    def __init__(self, name: str = ""):
+        self.__name = name
         self.__capacity = 0
         self.__sailors = 0
+        self.shipList.append(self)
 
     def getName(self) -> str:
         return self.__name
@@ -24,7 +26,9 @@ class Ship:
         self.__sailors = amt
 
     def to_dto(self):
-        return ShipDTO(name=self.__name, capacity=self.__capacity, sailors=self.__sailors)
+        return ShipDTO(
+            name=self.__name, capacity=self.__capacity, sailors=self.__sailors
+        )
 
     def update_from_dto(self, ship_dto):
         self.__name = ship_dto.name
@@ -33,7 +37,11 @@ class Ship:
 
 
 class ShipDTO:
-    def __init__(self, name: str, capacity: int, sailors: int):
+    def __init__(
+        self, ship_id: int, name: str, capacity: int, sailors: int, level: int = 1
+    ):
+        self.id = ship_id
         self.name = name
         self.capacity = capacity
         self.sailors = sailors
+        self.level = level

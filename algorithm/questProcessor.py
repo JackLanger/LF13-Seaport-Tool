@@ -8,8 +8,6 @@ class Algorithm:
     def calculate(self):
         raise NotImplementedError()
 
-
-##
 class QuestProcessor:
     def __init__(self, algorithm_type: Algorithm, ships: List[Ship], quest: Quest):
         self.__algorithm_type = algorithm_type

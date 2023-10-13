@@ -1,12 +1,106 @@
 {% macro banner(name='banner', value='', url='') -%}
-	<div class="banner-wrapper">
-		<a class="banner-link" href="{{ url }}">
-			<img class="banner-img" src="{{ value }}" alt="{{ name }}">
-		</a>
-	</div>
+    <div class="banner-wrapper">
+        <a class="banner-link" href="{{ url }}">
+            <img class="banner-img" src="{{ value }}" alt="{{ name }}">
+        </a>
+    </div>
 {%- endmacro %}
 
 {% macro input(name, value='', type='text', size=20) -%}
-	<input type="{{ type }}" name="{{ name }}" value="{{
-			value|e }}" size="{{ size }}">
+    <input type="{{ type }}" name="{{ name }}" value="{{ value|e }}" size="{{ size }}">
+{%- endmacro %}
+
+
+{# a single icon used in the ship cards #}
+{% macro icon(icon,value,alt='') -%}
+    <div class="col-4 mb-3"> <!-- Center align the contents -->
+
+        <div class="col">
+            <p class="card-text font-weight-bold h4 text-secondary">{{ value }}</p>
+        </div>
+
+        <div class="col icon-wrapper">
+            <img class="ship-icon h-100"
+                 src="{{ url_for('static', filename='resources/'+icon ) }}"
+                 alt="{{ alt }}"/>
+        </div>
+    </div>
+{%- endmacro %}
+
+{# a ship card containing functionality for upgrading , deleting and editing #}
+
+{% macro ship_card(ship,user) -%}
+
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-body text-center"> <!-- Center align all contents -->
+
+
+                <div class="row col-12 align-items-center">
+                    {% if ship.level == 1 %}
+                        <img src="{{ url_for('static', filename='resources/level-1-ship.png') }}"
+                             class="card-img-top align-self-center w-25" alt="Ship Image">
+                    {% elif ship.level == 5 %}
+                        <img src="{{ url_for('static', filename='resources/level-5-ship.svg') }}"
+                             class="card-img-top align-self-center w-25" alt="Ship Image">
+                    {% else %}
+                        <img src="{{ url_for('static', filename='resources/level-3-ship.png') }}"
+                             class="card-img-top w-25" alt="Ship Image">
+                    {% endif %}
+                </div>
+
+                <div class="row align-items-center">
+                    <div class="col-12">
+                        <h5 class="card-title">{{ ship.name }}</h5>
+                    </div>
+                </div>
+
+                <div class="container">
+                    <div class="row">
+                        {{ icon('crate.svg', ship.capacity,'capacity') }}
+                        {{ icon('sailor-pirate.svg', ship.sailors,'sailors') }}
+                        {{ icon('stars-level.svg', ship.level,'level') }}
+                    </div>
+                </div>
+
+                <div class="row align-items-center m-1">
+                    <div class="col-12 mt-3">
+
+                        <a href="/ships/edit/{{ ship.id }}"
+                           class="btn btn-primary rounded-circle p-2 m-1">
+                            <img
+                                src="{{ url_for('static',filename="resources/pen.svg") }}"
+                                class="btn-icon"
+                                alt="edit">
+                        </a>
+
+                        <a href="/ships/delete/{{ ship.id }}"
+                           class="btn btn-danger rounded-circle p-2 m-1">
+                            <img
+                                src="{{ url_for('static',filename="resources/can.svg") }}"
+                                class="btn-icon"
+                                alt="delete">
+                        </a>
+
+                        <a href="/ships/level-up/{{ ship.id }}"
+                           class="btn btn-warning rounded-circle p-2 m-1">
+                            <img
+                                src="{{ url_for('static',filename="resources/upgrade.svg") }}"
+                                class="btn-icon"
+                                alt="level-up">
+                        </a>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{%- endmacro %}
+
+
+{% macro round_icon(icon,alt) -%}
+    <img class="btn-icon"
+         src="{{ url_for('static', filename='resources/'+icon ) }}"
+         alt="{{ alt }}"/>
 {%- endmacro %}

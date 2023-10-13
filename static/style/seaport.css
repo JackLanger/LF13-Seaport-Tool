@@ -1,0 +1,42 @@
+body {
+    min-height: 70vh;
+    padding-bottom: 15vh;
+}
+
+footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background: #343a40;
+    color: white;
+    padding: 10px 0;
+}
+
+.banner-wrapper {
+    padding-top: 5vh;
+    padding-bottom: 5vh;
+
+    margin-top: 2vh;
+    margin-bottom: 2vh;
+    background: deeppink;
+}
+
+.logo-small {
+    margin: 0;
+    padding: 0;
+    width: 150px;
+    height: 80px;
+}
+
+.ship-icon {
+    max-height: 80%;
+}
+
+.icon-wrapper {
+    max-height: 50px;
+}
+
+.btn-icon{
+    max-height: 25px;
+    max-width: 25px;
+}
