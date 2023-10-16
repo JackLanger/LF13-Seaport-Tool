@@ -14,7 +14,7 @@
                     <tbody>
                     {% for quest in user.quests %}
                     <tr>
-                        <td>{{ quest.title }}</td>
+                        <td><a href="/quests/info/{{ quest.id }}">{{ quest.title }}</a></td>
                         <td><a href="/quests/edit/{{quest.id}}">{{ round_icon('pen.svg','delete') }}</a></td>
                         <td><a href="/quests/delete/{{quest.id}}">{{ round_icon('can.svg','delete') }}</a></td>
                     </tr>
