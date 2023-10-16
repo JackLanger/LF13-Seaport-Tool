@@ -12,12 +12,13 @@ ships = [
     ShipDTO(5, "Ship 5", 2, 1, 4),
 ]
 
+
 class ShipService:
     def __int__(self):
         pass
 
     def get_by_id(self, ship_id) -> ShipDTO:
-        return ships[ship_id-1]
+        return list(filter(lambda s: s.id == ship_id, ships))[0]
 
     def create_new(self, ShipDto) -> ShipDTO:
         pass
@@ -34,8 +35,8 @@ class UserService:
         uuid.uuid4(),
         "Template User",
         [
-            QuestDTO("Quest 1", [Resource("Wood", 100)]),
-            QuestDTO("Quest 2", [Resource("Wood", 100), Resource("Stone", 200)]),
+            QuestDTO(1, "Quest 1", [Resource("Wood", 100)]),
+            QuestDTO(2, "Quest 2", [Resource("Wood", 100), Resource("Stone", 200)]),
         ],
         ships,
     )
