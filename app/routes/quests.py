@@ -28,6 +28,18 @@ def display_quests(user_id: str):
     )
 
 
+@quest_pages.route("/delete/<int:id>", methods=[GET])
+def delete_quest(id):
+    user = verify_is_logged_in()
+    if not user:
+        return redirect("/login")
+    user = service.get_by_id(user)
+    quest = list(filter(lambda q: q.id == id, user.quests))[0]
+    user.quests.remove(quest)
+    service.save(user)
+    return redirect("/")
+
+
 @quest_pages.route("/create", methods=[POST, GET])
 def create_quest():
     uid = verify_is_logged_in()
@@ -43,7 +55,7 @@ def create_quest():
                 amount = int(res["amount"])
                 name = res["name"]
                 resources.append(Resource(name, amount=amount))
-            quest = QuestDTO(request.form["name"], resource=resources)
+            quest = QuestDTO(request.form["name"], resources=resources)
             user.quests.append(quest)
             service.save(user)
             return redirect("/quests")
@@ -55,11 +67,21 @@ def create_quest():
     return redirect("/login")
 
 
-@quest_pages.route("/create/<int:quest_id>/", methods=[POST, GET])
-def edit_quest(user_id: str):
-    user = service.get_by_id(user_id)
-    return render_template(
-        "index.html",
-        page_content="components/create_edit_quest.html",
-        user=user,
-    )
+@quest_pages.route("/edit/<int:quest_id>/", methods=[POST, GET])
+def edit_quest(quest_id: str):
+    user = verify_is_logged_in()
+    if not user:
+        return redirect("/login")
+    else:
+        user = service.get_by_id(quest_id)
+        quest = list(filter(lambda q: q.id == quest_id, user.quests))[0]
+
+        if not quest:
+            return redirect("/quests/create")
+        else:
+            return render_template(
+                "index.html",
+                page_content="components/edit_quest.html",
+                user=user,
+                quest=quest,
+            )
