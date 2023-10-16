@@ -40,6 +40,23 @@ def delete_quest(id):
     return redirect("/")
 
 
+@quest_pages.route("/info/<int:id>", methods=[GET])
+def info_page(id):
+    user = verify_is_logged_in()
+    if not user:
+        return redirect("/login")
+
+    user = service.get_by_id(user)
+    ships = user.ships
+    quest = list(filter(lambda q: q.id == id, user.quests))[0]
+    return render_template(
+        "index.html",
+        page_content="components/quest_info.html",
+        quest=quest,
+        ships=ships,
+    )
+
+
 @quest_pages.route("/create", methods=[POST, GET])
 def create_quest():
     uid = verify_is_logged_in()

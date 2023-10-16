@@ -1,0 +1,59 @@
+<div class="container">
+	<div class="row">
+		<div class="col-md-3">
+			<!-- Sidebar with a list of ships -->
+			<h2>Ships</h2>
+			<table class="table table-striped">
+				<thead>
+				<tr>
+					<th>Name</th>
+					<th>capacity</th>
+					<th>Level</th>
+				</tr>
+				</thead>
+				<tbody>
+				{% for ship in ships %}
+					<tr>
+						<td>{{ ship.name }}</td>
+						<td>{{ ship.capacity }} <img class="small-icon" src="{{ url_for('static',filename='resources/crate.svg') }}" alt="crate"></td>
+						<td>
+							{% for sh in range(ship.level) %}
+								<img
+										class="small-icon"
+										alt="star"
+										src="{{ url_for('static', filename='resources/star.svg') }}"
+								></img>
+							{% endfor %}
+						</td>
+					</tr>
+				{% endfor %}
+				</tbody>
+			</table>
+		</div>
+		<div class="col-md-9">
+			<!-- Main content for quest details -->
+			<h1>{{ quest.title }}</h1>
+			<p>ID: {{ quest.id }}</p>
+			<p>Description: {{ quest.description }}</p>
+			<h2>Resources:</h2>
+			<table class="table table-striped">
+				<thead>
+				<tr>
+					<th>Name</th>
+					<th>Amount</th>
+				</tr>
+				</thead>
+				<tbody>
+				{% for resource in quest.resource %}
+					<tr>
+						<td>{{ resource.name }}</td>
+						<td>{{ resource.amount }}</td>
+					</tr>
+				{% endfor %}
+				</tbody>
+			</table>
+		</div>
+
+		<a class="btn btn-success" href="/quests/{{ quest.id }}/compute">Compute</a>
+	</div>
+</div>
