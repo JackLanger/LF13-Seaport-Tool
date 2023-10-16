@@ -102,3 +102,18 @@ def edit_quest(quest_id: str):
                 user=user,
                 quest=quest,
             )
+
+
+@quest_pages.route("/<int:id>/compute", methods=[GET])
+def compute_quest(id):
+    user = verify_is_logged_in()
+    if not user:
+        return redirect("/login")
+    user = service.get_by_id(user)
+
+    return render_template(
+        "index.html",
+        page_content="components/compute_quest.html",
+        quest=list(filter(lambda q: q.id == id, user.quests))[0],
+        ships=user.ships,
+    )
