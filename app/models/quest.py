@@ -37,6 +37,7 @@ class Quest:
 
 
 class QuestDTO:
-    def __init__(self, title: str, resources: List[Resource]):
+    def __init__(self,id:int, title: str, resources: List[Resource]):
+        self.id = id
         self.title = title
         self.resource = resources

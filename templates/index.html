@@ -1,9 +1,14 @@
 {% from 'macros.jinja' import banner with context %}
 {% include 'components/head.html' %}
 <body>
-{% from 'macros.jinja' import banner,icon,ship_card with context %}
+{% from 'macros.jinja' import icon,ship_card with context %}
 {% include 'components/navbar.html' %}
 
+<div class="banner-wrapper">
+	<a class="banner-link" href="{{ url }}">
+		<img class="banner-img" src="{{ value }}" alt="{{ name }}">
+	</a>
+</div>
 {% include page_content %}
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
