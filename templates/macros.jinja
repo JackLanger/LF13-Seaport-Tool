@@ -107,33 +107,39 @@
 
 
 {% macro ship_table(ships) -%}
-	<table class="table table-striped">
-		<thead>
-		<tr>
-			<th>Name</th>
-			<th>capacity</th>
-			<th>Level</th>
-		</tr>
-		</thead>
-		<tbody>
-		{% for ship in ships %}
-			<tr>
-				<td>{{ ship.name }}</td>
-				<td>{{ ship.capacity }} <img class="small-icon" src="{{ url_for('static',filename='resources/crate.svg') }}" alt="crate"></td>
-				<td>
-					{% for sh in range(ship.level) %}
-						<img
-								class="small-icon"
-								alt="star"
-								src="{{ url_for('static', filename='resources/star.svg') }}"
-						></img>
-					{% endfor %}
-				</td>
-			</tr>
-		{% endfor %}
-		</tbody>
-	</table>
+    <form id="shipSelectionForm">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Capacity</th>
+                <th>Level</th>
+                <th>Select</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for ship in ships %}
+                <tr class="ship-row" data-ship-id="{{ ship.id }}">
+                    <td>{{ ship.name }}</td>
+                    <td>{{ ship.capacity }} <img class="small-icon" src="{{ url_for('static', filename='resources/crate.svg') }}" alt="crate"></td>
+                    <td>
+                        {% for sh in range(ship.level) %}
+                            <img class="small-icon" alt="star" src="{{ url_for('static', filename='resources/star.svg') }}">
+                        {% endfor %}
+                    </td>
+                    <td>
+                        <input type="checkbox" name="selectedShips" value="{{ ship.id }}">
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </form>
+
 {%- endmacro %}
+
+
+
 
 {% macro resource_table(quest) -%}
 	<table class="table table-striped">

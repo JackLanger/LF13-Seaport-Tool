@@ -1,0 +1,21 @@
+<div class="container">
+    <h1>Display Ships</h1>
+
+    {% if algorithm_result %}
+        {% for row in algorithm_result %}
+            <h2>Row {{ loop.index }}</h2>
+            <ul>
+                {% for ship in row %}
+                    <li>
+                        {% from 'macros.jinja' import ship_card with context %}
+                        {{ ship_card(ship) }}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endfor %}
+    {% else %}
+        <p>No algorithm result available.</p>
+    {% endif %}
+
+    <a class="btn btn-secondary m-1" href="/">Back</a>
+</div>

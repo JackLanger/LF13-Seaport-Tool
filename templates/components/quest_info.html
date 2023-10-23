@@ -1,21 +1,31 @@
-
+<!-- TODO: view calc, select ships, post request calc-->
 {% from 'macros.jinja' import ship_table, resource_table with context %}
 <div class="container">
 	<div class="row">
-		<div class="col-md-3">
-			<!-- Sidebar with a list of ships -->
+		<div class="col-md-4">
 			<h2>Ships</h2>
 			{{ ship_table(ships) }}
 		</div>
-		<div class="col-md-9">
-			<!-- Main content for quest details -->
+		<div class="col-md-8">
 			<h1>{{ quest.title }}</h1>
 			<p>ID: {{ quest.id }}</p>
 			<p>Description: {{ quest.description }}</p>
 			<h2>Resources:</h2>
 			{{ resource_table(quest) }}
 		</div>
-		<a class="btn btn-success m-1" href="/quests/{{ quest.id }}/compute">Compute</a>
+		<button type="button" class="btn btn-success m-1" onclick="computeQuest()">Compute</button>
 		<a class="btn btn-secondary m-1" href="/">Back</a>
 	</div>
 </div>
+
+<script>
+        function computeQuest() {
+            var selectedShipCheckboxes = document.querySelectorAll('input[name="selectedShips"]:checked');
+
+            var selectedShipIds = Array.from(selectedShipCheckboxes).map(function(checkbox) {
+                return checkbox.value;
+            });
+
+            window.location.href = '/quests/{{ quest.id }}/compute?selectedShipIds=' + selectedShipIds.join(',');
+        }
+    </script>

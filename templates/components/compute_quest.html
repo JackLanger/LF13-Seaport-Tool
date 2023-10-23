@@ -1,3 +1,34 @@
+{% from 'macros.jinja' import ship_table, resource_table with context %}
+
 <div class="container">
-	<h1>Compute quest</h1>
+    <h1>Compute quest</h1>
+
+    <div id="selectedShips">
+        <h2>Selected Ships</h2>
+        <ul id="selectedShipsList"></ul>
+    </div>
+
+    <form id="algorithmForm">
+        <label for="algorithmType">Select Algorithm Type:</label>
+        <select id="algorithmType" name="algorithmType">
+            <option value="capacity_critical">Capacity Algorithm</option>
+            <option value="time_critical">Time Algorithm</option>
+        </select>
+        <button type="button" class="btn btn-success m-1" onclick="computeQuest()">Compute</button>
+    </form>
+
+    <a class="btn btn-secondary m-1" href="/">Back</a>
 </div>
+
+<script>
+    function computeQuest() {
+        var selectedShipCheckboxes = document.querySelectorAll('input[name="selectedShips"]:checked');
+
+        var selectedShipIds = Array.from(selectedShipCheckboxes).map(function(checkbox) {
+            return checkbox.value;
+        });
+
+        window.location.href = '/quests/{{ quest.id }}/display_ships?selectedShipIds=' + selectedShipIds.join(',');
+    }
+</script>
+
