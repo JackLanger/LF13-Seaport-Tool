@@ -8,7 +8,7 @@ class Algorithm:
         self.ships = ships
         self.quest = quest
 
-    def calculate(self) -> List[List[Ship]]:
+    def calculate(self) -> List[List[List[Ship]]]:
         raise NotImplementedError()
 
 
@@ -18,5 +18,5 @@ class QuestProcessor:
         self.__ships = ships
         self.__quest = quest
 
-    def process_quest(self) -> List[List[Ship]]:
+    def process_quest(self) -> List[List[List[Ship]]]:
         return self.__algorithm.calculate()

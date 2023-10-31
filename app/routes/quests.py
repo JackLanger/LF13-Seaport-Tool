@@ -116,19 +116,15 @@ def compute_quest(id):
         return redirect("/login")
     user = service.get_by_id(user)
 
-    default_ship_names = ['Ship1', 'Ship2', 'Ship3']  # Replace with your default ship names
-
-    selected_ship_names = session.get('selected_ship_names', default_ship_names)
-    print(len(selected_ship_names))
+    selected_ships = request.args.getlist("selectedShipIds")
+    ships = [ship for ship in user.ships if ship.name in selected_ships[0].split(",")]
+    session['selected_ship_names'] = selected_ships
 
     quest = next((q for q in user.quests if q.id == id), None)
 
     if request.method == 'POST':
-        selected_ship_names = request.json.get('selectedShipNames', default_ship_names)
-        session['selected_ship_names'] = selected_ship_names
-        print(len(selected_ship_names))
-        algorithm_type = request.json.get('algorithmType')
-        ships = [ship for ship in user.ships if ship.name in selected_ship_names]
+        print("Entered POST")
+        algorithm_type = request.form.get('algorithmType')
 
         if algorithm_type == AlgorithmType.TIME_CRITICAL.value:
             algorithm = TimeAlgorithm(ships, quest)
@@ -146,7 +142,7 @@ def compute_quest(id):
             page_content="components/display_ships.html",
             quest=quest,
             ships=user.ships,
-            selected_ship_names=selected_ship_names,
+            selected_ship_names=selected_ships,
             algorithm_result=result
         )
 
@@ -155,7 +151,7 @@ def compute_quest(id):
         page_content="components/compute_quest.html",
         quest=quest,
         ships=user.ships,
-        selected_ship_names=selected_ship_names
+        selected_ship_names=selected_ships
     )
 
 
@@ -169,8 +165,6 @@ def display_ships(id):
 
     quest = next((q for q in user.quests if q.id == id), None)
 
-    selected_ship_names = session.get('selected_ship_names', [])
-
     algorithm_result = session.get('algorithm_result', [])
 
     return render_template(
@@ -178,6 +172,5 @@ def display_ships(id):
         page_content="components/display_ships.html",
         quest=quest,
         ships=user.ships,
-        selected_ship_names=selected_ship_names,
         algorithm_result=algorithm_result
     )

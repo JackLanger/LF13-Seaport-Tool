@@ -2,16 +2,18 @@
     <h1>Display Ships</h1>
 
     {% if algorithm_result %}
-        {% for row in algorithm_result %}
-            <h2>Row {{ loop.index }}</h2>
-            <ul>
-                {% for ship in row %}
-                    <li>
-                        {% from 'macros.jinja' import ship_card with context %}
-                        {{ ship_card(ship) }}
-                    </li>
-                {% endfor %}
-            </ul>
+        {% for possibility_index in range(0, algorithm_result|length) %}
+            <h2>Possibility {{ possibility_index + 1 }}</h2>
+            {% set possibility = algorithm_result[possibility_index] %}
+            {% for round_index in range(0, possibility|length) %}
+                <h3>Round {{ round_index + 1 }}</h3>
+                <ul>
+                    {% set round = possibility[round_index] %}
+                    {% for ship in round %}
+                        <li>{{ ship_card(ship) }}</li>
+                    {% endfor %}
+                </ul>
+            {% endfor %}
         {% endfor %}
     {% else %}
         <p>No algorithm result available.</p>
