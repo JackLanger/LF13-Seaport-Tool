@@ -24,9 +24,11 @@ def expire_existing_cookies(resp):
 
 
 def create_cookies(resp, username):
+    from flask import request
     import datetime
 
     expire_date = datetime.datetime.now()
-    expire_date = expire_date + datetime.timedelta(days=1)
+    days = 365 if (request.form.get("keepLoggedIn") == "on") else 1
+    expire_date = expire_date + datetime.timedelta(days=days)
     resp.set_cookie(user, username, expires=expire_date)
     resp.set_cookie(user_uid, str(uuid.uuid4()), expires=expire_date)
