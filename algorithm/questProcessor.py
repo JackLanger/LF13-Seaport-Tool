@@ -1,6 +1,7 @@
 from typing import List
 from app.models.quest import Quest
 from app.models.ship import Ship
+from app.models.solution import Solution
 
 
 class Algorithm:
@@ -8,7 +9,7 @@ class Algorithm:
         self.ships = ships
         self.quest = quest
 
-    def calculate(self) -> List[List[List[Ship]]]:
+    def calculate(self) -> List[Solution]:
         raise NotImplementedError()
 
 
@@ -18,5 +19,5 @@ class QuestProcessor:
         self.__ships = ships
         self.__quest = quest
 
-    def process_quest(self) -> List[List[List[Ship]]]:
+    def process_quest(self) -> List[Solution]:
         return self.__algorithm.calculate()

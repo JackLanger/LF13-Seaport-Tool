@@ -10,6 +10,8 @@ from app.routes.validation.login_validation import verify_is_logged_in
 from app.dal.service import UserService
 from app.routes.constants import GET, POST
 from app.enums.algorithm_type_enum import AlgorithmType
+from app.models.solution import Solution
+from app.models.round import Round
 
 quest_pages = Blueprint(
     "quests", __name__, static_folder="../../static", template_folder="../../templates"
@@ -117,7 +119,8 @@ def compute_quest(id):
     user = service.get_by_id(user)
 
     selected_ships = request.args.getlist("selectedShipIds")
-    ships = [ship for ship in user.ships if ship.name in selected_ships[0].split(",")]
+    ships = [ship for ship in user.ships if selected_ships and ship.name in selected_ships[0].split(",")]
+    print(ships)
     session['selected_ship_names'] = selected_ships
 
     quest = next((q for q in user.quests if q.id == id), None)
@@ -165,12 +168,37 @@ def display_ships(id):
 
     quest = next((q for q in user.quests if q.id == id), None)
 
-    algorithm_result = session.get('algorithm_result', [])
+    round_ = Round()
+    ships = user.ships[:2]
+    for ship in ships:
+        round_.addShip((ship, "Wood"))
+
+    solution = Solution()
+    solution.addRound(round_)
+
+    algorithm_result = [solution]
+
+    ships_result = []
+    resources_result = []
+    for solution in algorithm_result:
+        ships_solution = []
+        resources_solution = []
+        for round_ in solution.getSolution():
+            ships_round = [ship for ship, _ in round_.getRound()]
+            resources_round = [resource for _, resource in round_.getRound()]
+            ships_solution.append(ships_round)
+            resources_solution.append(resources_round)
+        ships_result.append(ships_solution)
+        resources_result.append(resources_solution)
+
+    print(ships_result)
+    print(resources_result)
 
     return render_template(
         "index.html",
         page_content="components/display_ships.html",
         quest=quest,
         ships=user.ships,
-        algorithm_result=algorithm_result
+        ships_result=ships_result,
+        resources_result=resources_result
     )

@@ -18,13 +18,13 @@
 </div>
 
 <script>
-        function computeQuest() {
-            var selectedShipCheckboxes = document.querySelectorAll('input[name="selectedShips"]:checked');
+	function computeQuest() {
+		var selectedShipCheckboxes = document.querySelectorAll('input[name="selectedShips"]:checked');
 
-            var selectedShipIds = Array.from(selectedShipCheckboxes).map(function(checkbox) {
-                return checkbox.value;
-            });
+		var selectedShipIds = Array.from(selectedShipCheckboxes).map(function(checkbox) {
+			return checkbox.value;
+		});
 
-            window.location.href = '/quests/{{ quest.id }}/compute?selectedShipIds=' + selectedShipIds.join(',');
-        }
-    </script>
+		window.location.href = '/quests/{{ quest.id }}/compute?selectedShipIds=' + selectedShipIds.join(',');
+	}
+</script>
