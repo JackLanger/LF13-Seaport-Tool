@@ -10,6 +10,7 @@ class Resource:
 
 class Quest:
     questList = []
+
     def __init__(self, title: str = ""):
         self.__title = title
         self.__resources = []
@@ -32,12 +33,12 @@ class Quest:
         return QuestDTO(resource=self.__resources, amount=self.__amount)
 
     def update_from_dto(self, quest_dto):
-        self.__resources = quest_dto.resource
+        self.__resources = quest_dto.resources
         self.__amount = quest_dto.amount
 
 
 class QuestDTO:
-    def __init__(self,id:int, title: str, resources: List[Resource]):
+    def __init__(self, id: int, title: str, resources: List[Resource]):
         self.id = id
         self.title = title
-        self.resource = resources
+        self.resources = resources
