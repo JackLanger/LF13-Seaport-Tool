@@ -1,4 +1,3 @@
-from importlib import resources
 from typing import List
 
 
@@ -16,7 +15,7 @@ class Quest:
         self.__amount = 0
         self.questList.append(self)
 
-    def getResource(self) -> str:
+    def getResource(self) -> List[str]:
         return self.__resources
 
     def getAmount(self) -> int:
@@ -37,7 +36,8 @@ class Quest:
 
 
 class QuestDTO:
-    def __init__(self,id:int, title: str, resources: List[Resource]):
+    def __init__(self,id:int, title: str, resources: List[str]):
         self.id = id
         self.title = title
         self.resource = resources
+        self.amount = resources[0].amount

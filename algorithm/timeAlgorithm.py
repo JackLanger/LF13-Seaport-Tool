@@ -9,10 +9,15 @@ class TimeAlgorithm(Algorithm):
         resources = self.quest.getResource()
         ships = self.ships
 
-        r = Round()
-        r.addShip((ships[0], resources[0]))
+        solutions = []
 
-        sol = Solution()
-        sol.addRound(r)
+        for ship in ships:
+            r = Round()
+            r.addShip((ship, resources[0]))
 
-        return [sol]
+            sol = Solution()
+            sol.addRound(r)
+
+            solutions.append(sol)
+
+        return solutions

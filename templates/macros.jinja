@@ -114,7 +114,6 @@
                 <th>Name</th>
                 <th>Capacity</th>
                 <th>Level</th>
-                <th>Select</th>
             </tr>
             </thead>
             <tbody>
@@ -127,15 +126,11 @@
                             <img class="small-icon" alt="star" src="{{ url_for('static', filename='resources/star.svg') }}">
                         {% endfor %}
                     </td>
-                    <td>
-                        <input type="checkbox" name="selectedShips" value="{{ ship.name }}">
-                    </td>
                 </tr>
             {% endfor %}
             </tbody>
         </table>
     </form>
-
 {%- endmacro %}
 
 

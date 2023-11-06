@@ -8,27 +8,45 @@
         <ul id="selectedShipsList"></ul>
     </div>
 
-    <form id="algorithmForm">
+    <form id="algorithmForm" method="POST">
         <label for="algorithmType">Select Algorithm Type:</label>
         <select id="algorithmType" name="algorithmType">
             <option value="capacity_critical">Capacity Algorithm</option>
             <option value="time_critical">Time Algorithm</option>
         </select>
-        <button type="button" class="btn btn-success m-1" onclick="computeQuest()">Compute</button>
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Capacity</th>
+                    <th>Level</th>
+                    <th>Select</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ship in ships %}
+                    <tr>
+                        <td>{{ ship.name }}</td>
+                        <td>{{ ship.capacity }} <img class="small-icon" src="{{ url_for('static', filename='resources/crate.svg') }}" alt="crate"></td>
+                        <td>
+                            {% for sh in range(ship.level) %}
+                                <img class="small-icon" alt="star" src="{{ url_for('static', filename='resources/star.svg') }}">
+                            {% endfor %}
+                        </td>
+                        <td>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" name="selectedShips" value="{{ ship.name }}">
+                            </label>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="button-container">
+            <button type="submit" class="btn btn-success m-1">Compute</button>
+            <a class="btn btn-secondary m-1" href="/">Back</a>
+        </div>
     </form>
-
-    <a class="btn btn-secondary m-1" href="/">Back</a>
 </div>
-
-<script>
-    function computeQuest() {
-        var selectedShipCheckboxes = document.querySelectorAll('input[name="selectedShips"]:checked');
-
-        var selectedShipIds = Array.from(selectedShipCheckboxes).map(function(checkbox) {
-            return checkbox.value;
-        });
-
-        window.location.href = '/quests/{{ quest.id }}/display_ships?selectedShipIds=' + selectedShipIds.join(',');
-    }
-</script>
-

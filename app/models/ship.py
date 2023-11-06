@@ -37,11 +37,28 @@ class Ship:
 
 
 class ShipDTO:
-    def __init__(
-        self, ship_id: int, name: str, capacity: int, sailors: int, level: int = 1
-    ):
+    def __init__(self, ship_id: int, name: str, capacity: int, sailors: int, level: int = 1):
         self.id = ship_id
         self.name = name
         self.capacity = capacity
         self.sailors = sailors
         self.level = level
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'capacity': self.capacity,
+            'sailors': self.sailors,
+            'level': self.level
+        }
+
+    @classmethod
+    def from_dict(cls, data):
+        return cls(
+            ship_id=data['id'],
+            name=data['name'],
+            capacity=data['capacity'],
+            sailors=data['sailors'],
+            level=data['level']
+        )

@@ -1,17 +1,16 @@
 import json
-from typing import List
 
-from flask import Blueprint, render_template, redirect, make_response, request, session, jsonify
+from flask import Blueprint, render_template, redirect, request, session, jsonify
 
 from algorithm.capacityAlgorithm import CapacityAlgorithm
 from algorithm.questProcessor import QuestProcessor
 from algorithm.timeAlgorithm import TimeAlgorithm
+from app.dal.dal import Dal
+from app.models.quest import Quest
 from app.routes.validation.login_validation import verify_is_logged_in
 from app.dal.service import UserService
 from app.routes.constants import GET, POST
 from app.enums.algorithm_type_enum import AlgorithmType
-from app.models.solution import Solution
-from app.models.round import Round
 
 quest_pages = Blueprint(
     "quests", __name__, static_folder="../../static", template_folder="../../templates"
@@ -118,15 +117,19 @@ def compute_quest(id):
         return redirect("/login")
     user = service.get_by_id(user)
 
-    selected_ships = request.args.getlist("selectedShipIds")
-    ships = [ship for ship in user.ships if selected_ships and ship.name in selected_ships[0].split(",")]
-    print(ships)
-    session['selected_ship_names'] = selected_ships
+    selected_ships = request.form.getlist("selectedShips")
 
-    quest = next((q for q in user.quests if q.id == id), None)
+    session['selected_ship_names'] = selected_ships
+    print(selected_ships)
+
+    quest_dto = next((q for q in user.quests if q.id == id), None)
+
+    quest = Quest()
+    quest.update_from_dto(quest_dto)
+
+    ships = [ship for ship in user.ships if selected_ships and ship.name in selected_ships]
 
     if request.method == 'POST':
-        print("Entered POST")
         algorithm_type = request.form.get('algorithmType')
 
         if algorithm_type == AlgorithmType.TIME_CRITICAL.value:
@@ -136,69 +139,43 @@ def compute_quest(id):
         else:
             return jsonify({'error': 'Unsupported algorithm type'}), 400
 
+        selected_ships = request.args.getlist("selectedShipIds")
+        print(selected_ships)
+
         quest_processor = QuestProcessor(algorithm, ships, quest)
         result = quest_processor.process_quest()
-        session['algorithm_result'] = result
+        session['algorithm_result'] = Dal.serialize(result)
+
+        ships_result = []
+        resources_result = []
+
+        for solution in result:
+            ships_solution = []
+            resources_solution = []
+            for round_ in solution.getSolution():
+                ships_round = [ship for ship, _ in round_.getRound()]
+                resources_round = [resource for _, resource in round_.getRound()]
+                print(resources_round)
+                ships_solution.append(ships_round)
+                resources_solution.append(resources_round)
+            ships_result.append(ships_solution)
+            resources_result.append(resources_solution)
 
         return render_template(
             "index.html",
             page_content="components/display_ships.html",
-            quest=quest,
+            quest=quest_dto,
             ships=user.ships,
             selected_ship_names=selected_ships,
-            algorithm_result=result
+            algorithm_result=result,
+            ships_result=ships_result,
+            resources_result=resources_result
         )
 
     return render_template(
         "index.html",
         page_content="components/compute_quest.html",
-        quest=quest,
+        quest=quest_dto,
         ships=user.ships,
         selected_ship_names=selected_ships
-    )
-
-
-@quest_pages.route("/<int:id>/display_ships", methods=[GET])
-def display_ships(id):
-    user = verify_is_logged_in()
-    if not user:
-        return redirect("/login")
-
-    user = service.get_by_id(user)
-
-    quest = next((q for q in user.quests if q.id == id), None)
-
-    round_ = Round()
-    ships = user.ships[:2]
-    for ship in ships:
-        round_.addShip((ship, "Wood"))
-
-    solution = Solution()
-    solution.addRound(round_)
-
-    algorithm_result = [solution]
-
-    ships_result = []
-    resources_result = []
-    for solution in algorithm_result:
-        ships_solution = []
-        resources_solution = []
-        for round_ in solution.getSolution():
-            ships_round = [ship for ship, _ in round_.getRound()]
-            resources_round = [resource for _, resource in round_.getRound()]
-            ships_solution.append(ships_round)
-            resources_solution.append(resources_round)
-        ships_result.append(ships_solution)
-        resources_result.append(resources_solution)
-
-    print(ships_result)
-    print(resources_result)
-
-    return render_template(
-        "index.html",
-        page_content="components/display_ships.html",
-        quest=quest,
-        ships=user.ships,
-        ships_result=ships_result,
-        resources_result=resources_result
     )

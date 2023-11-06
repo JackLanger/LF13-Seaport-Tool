@@ -1,30 +1,21 @@
 {% from 'macros.jinja' import ship_table, resource_table with context %}
+
 <div class="container">
-	<div class="row">
-		<div class="col-md-4">
-			<h2>Ships</h2>
-			{{ ship_table(ships) }}
-		</div>
-		<div class="col-md-8">
-			<h1>{{ quest.title }}</h1>
-			<p>ID: {{ quest.id }}</p>
-			<p>Description: {{ quest.description }}</p>
-			<h2>Resources:</h2>
-			{{ resource_table(quest) }}
-		</div>
-		<button type="button" class="btn btn-success m-1" onclick="computeQuest()">Compute</button>
-		<a class="btn btn-secondary m-1" href="/">Back</a>
-	</div>
+    <div class="row">
+        <div class="col-md-4">
+            <h2>Ships</h2>
+            {{ ship_table(ships) }}
+        </div>
+        <div class="col-md-8">
+            <h1>{{ quest.title }}</h1>
+            <p>ID: {{ quest.id }}</p>
+            <p>Description: {{ quest.description }}</p>
+            <h2>Resources:</h2>
+            {{ resource_table(quest) }}
+        </div>
+        <form id="computeQuestForm" method="GET" action="/quests/{{ quest.id }}/compute">
+            <button type="submit" class="btn btn-success m-1">Compute</button>
+        </form>
+        <a class="btn btn-secondary m-1" href="/">Back</a>
+    </div>
 </div>
-
-<script>
-	function computeQuest() {
-		var selectedShipCheckboxes = document.querySelectorAll('input[name="selectedShips"]:checked');
-
-		var selectedShipIds = Array.from(selectedShipCheckboxes).map(function(checkbox) {
-			return checkbox.value;
-		});
-
-		window.location.href = '/quests/{{ quest.id }}/compute?selectedShipIds=' + selectedShipIds.join(',');
-	}
-</script>
