@@ -2,6 +2,10 @@ import json
 from typing import List
 
 from flask import Blueprint, render_template, redirect, make_response, request
+
+from algorithm.capacityAlgorithm import CapacityAlgorithm
+from algorithm.questProcessor import QuestProcessor
+from algorithm.timeAlgorithm import TimeAlgorithm
 from app.routes.validation.login_validation import verify_is_logged_in
 from app.dal.service import UserService
 from app.routes.constants import GET, POST
@@ -104,16 +108,21 @@ def edit_quest(quest_id: str):
             )
 
 
-@quest_pages.route("/<int:id>/compute", methods=[GET])
+@quest_pages.route("/<int:id>/compute", methods=[POST])
 def compute_quest(id):
     user = verify_is_logged_in()
     if not user:
         return redirect("/login")
     user = service.get_by_id(user)
+    form = request.form
+    quest = list(filter(lambda q: q.id == id, user.quests))[0]
+    # algo = (
+    #     TimeAlgorithm(user.ships, quest)
+    #     if form["algo"] == "time"
+    #     else CapacityAlgorithm(user.ships, quest)
+    # )
 
-    return render_template(
-        "index.html",
-        page_content="components/compute_quest.html",
-        quest=list(filter(lambda q: q.id == id, user.quests))[0],
-        ships=user.ships,
-    )
+    # processor = QuestProcessor()
+    algo = CapacityAlgorithm(user.ships, quest)
+    result = algo.calculate
+    return result.to_string()

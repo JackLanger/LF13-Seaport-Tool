@@ -1,6 +1,6 @@
 class Ship:
-  
     shipList = []
+
     def __init__(self, name: str = ""):
         self.__name = name
         self.__capacity = 0
@@ -45,3 +45,17 @@ class ShipDTO:
         self.capacity = capacity
         self.sailors = sailors
         self.level = level
+
+    @property
+    def json(self):
+        import json
+
+        return json.dumps(
+            {
+                "id": self.id,
+                "name": self.name,
+                "capacity": self.capacity,
+                "sailors": self.sailors,
+                "level": self.level,
+            }
+        )

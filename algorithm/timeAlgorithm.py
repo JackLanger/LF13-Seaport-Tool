@@ -1,15 +1,15 @@
-from typing import List
+from typing import List, Dict
 
 from app.models.quest import QuestDTO
 from app.models.ship import ShipDTO
-from algorithm.questProcessor import Algorithm
+from algorithm.questProcessor import Algorithm, AlgoResult
 
 
 class TimeAlgorithm(Algorithm):
     def __init__(self, ships: List[ShipDTO], quest: QuestDTO):
         super().__init__(ships, quest)
 
-    def calculate(self):
+    def calculate(self) -> AlgoResult:
         total_amount = 0
         total_capacity = 0
 
@@ -44,4 +44,5 @@ class TimeAlgorithm(Algorithm):
                             break
 
         result.append(current)
+        result = AlgoResult(len(result), result)
         return result

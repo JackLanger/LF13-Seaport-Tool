@@ -1,0 +1,186 @@
+
+{% macro edit_quest(quest) -%}
+    <div class="container mt-5">
+        <h1>Create Quest</h1>
+        <!--    action="/quests/create" method="POST"-->
+        <form id="createQuestForm" method="POST" action="/edit/{{ quest.id }}/">
+            <div class="form-group">
+                <label for="name">Quest Name:</label>
+                <input type="text" id="name" name="name" class="form-control" value="{{ quest.title }}" required>
+            </div>
+            <div class="form-group">
+                <label for="description">Description:</label>
+                <textarea id="description" name="description" class="form-control" rows="4"
+                          value="{{ quest.description }}" required></textarea>
+            </div>
+
+            <!-- Resource Fields -->
+            <div id="resource-fields">
+                {% for resource in quest.resource %}
+
+                    <div class="resource-field">
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <input type="text" name="resource_name" class="form-control" placeholder="Resource Name"
+                                       value="{{ resource.name }}"
+                                       required>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <input type="number" name="resource_amount" class="form-control" placeholder="Amount"
+                                       value="{{ resource.amount }}" required>
+                            </div>
+                            <div class="form-group col-md-2">
+                                <button type="button" class="btn btn-danger" onclick="removeResourceField(this)">
+                                    Remove
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                {% endfor %}
+            </div>
+
+            <button type="button" class="btn btn-success btn-rounded rounded-circle p-2 m-1"
+                    onclick="addResourceField()">
+                {{ round_icon('add-square.svg','Add new') }}
+            </button>
+
+            <button type="submit" class="btn btn-primary mt-3 float-right" onclick="sendFormData()">Save Quest</button>
+        </form>
+    </div>
+
+{%- endmacro %}
+
+
+
+{% macro create_quest() -%}
+    <div class="container mt-5">
+        <h1>Create Quest</h1>
+        <!--    action="/quests/create" method="POST"-->
+        <form id="createQuestForm">
+            <div class="form-group">
+                <label for="name">Quest Name:</label>
+                <input type="text" id="name" name="name" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="description">Description:</label>
+                <textarea id="description" name="description" class="form-control" rows="4" required></textarea>
+            </div>
+
+            <!-- Resource Fields -->
+            <div id="resource-fields">
+                <div class="resource-field">
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <input type="text" name="resource_name" class="form-control" placeholder="Resource Name"
+                                   required>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <input type="number" name="resource_amount" class="form-control" placeholder="Amount"
+                                   required>
+                        </div>
+                        <div class="form-group col-md-2">
+                            <button type="button" class="btn btn-danger" onclick="removeResourceField(this)">Remove
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button type="button" class="btn btn-success btn-rounded rounded-circle p-2 m-1"
+                    onclick="addResourceField()">
+                {{ round_icon('add-square.svg','Add new') }}
+            </button>
+
+            <button type="submit" class="btn btn-primary mt-3 float-right">Create Quest</button>
+        </form>
+    </div>
+{%- endmacro %}
+
+{% macro resource_table(quest) -%}
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Amount</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for resource in quest.resource %}
+            <tr>
+                <td>{{ resource.name }}</td>
+                <td>{{ resource.amount }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{%- endmacro %}
+
+
+
+{% macro round_icon(icon,alt) -%}
+    <img class="btn-icon"
+         src="{{ url_for('static', filename='resources/'+icon ) }}"
+         alt="{{ alt }}"/>
+{%- endmacro %}
+
+
+{% macro ship_table(ships) -%}
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>capacity</th>
+            <th>Level</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for ship in ships %}
+            <tr>
+                <td>{{ ship.name }}</td>
+                <td>{{ ship.capacity }} <img class="small-icon"
+                                             src="{{ url_for('static',filename='resources/crate.svg') }}" alt="crate">
+                </td>
+                <td>
+                    {% for sh in range(ship.level) %}
+                        <img
+                                class="small-icon"
+                                alt="star"
+                                src="{{ url_for('static', filename='resources/star.svg') }}"
+                        ></img>
+                    {% endfor %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{%- endmacro %}
+
+
+
+{# a ship card containing functionality for upgrading , deleting and editing #}
+{% macro quest_card(quest) -%}
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <h2>{{ quest.name }}</h2>
+                <table>
+                    <tr>
+                        <th>Resource</th>
+                        <th>Amount</th>
+                        {% for r in quest.resources %}
+                            <td>{{ r.name }}</td>
+                            <td>{{ r.amount }}</td>
+                        {% endfor %}
+                    </tr>
+                </table>
+            </div>
+            <button onclick="edit_quest(this)"><img class="btn-icon"
+                                                    src="{{ url_for('static', filename='resources/pen.svg') }}"
+                                                    alt="edit"></button>
+            <button onclick="delete_quest(this)"><img class="btn-icon"
+                                                      src="{{ url_for('static', filename='resources/can.svg') }}"
+                                                      alt="delete"></button>
+        </div>
+    </div>
+{%- endmacro %}

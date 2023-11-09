@@ -1,11 +1,42 @@
 {% from 'macros.jinja' import banner with context %}
-{% include 'components/head.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Seaport Hacks</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/seaport.css') }}">
+</head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
 <body>
 {% from 'macros.jinja' import banner with context %}
 {%  include 'components/navbar.html' %}
+
 <div class="container mt-5">
     {% include page_content %}
 </div>
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <p>&copy; 2023 Long Duerpsch VWgl & Co. Kg. All rights reserved.</p>
+            </div>
+            <div class="col-md-6">
+                <ul class="list-inline text-md-end">
+                    <li class="list-inline-item"><a href="/info/privacy-policy">Privacy Policy</a></li>
+                    <li class="list-inline-item"><a href="/info/terms-of-service">Terms of Service</a></li>
+                    <li class="list-inline-item"><a href="/info/contact">Contact Us</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</footer>
+<script type="text/ecmascript-6" src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
-{% include 'components/footer.html' %}
-{% include 'components/tail.html' %}
+</html>

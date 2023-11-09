@@ -21,68 +21,63 @@ def create_ship_dto(form):
     ship_capacity = form["capacity"]
     ship_sailors = form["sailors"]
     ship_level = form["level"]
-    return ShipDTO(-1, name, int(ship_capacity), int(ship_sailors), int(ship_level))
-
-
-def save_ship_dto(ship: ShipDTO):
-    return ship_service.create_new(ship)
+    return ShipDTO(
+        -1, ship_name, int(ship_capacity), int(ship_sailors), int(ship_level)
+    )
 
 
 def update_user(user, ship: ShipDTO):
-    user.ships += ship
+    user.ships.append(ship)
     user_service.save(user)
 
 
-@ship_pages.route("/create", methods=[GET, POST])
+@ship_pages.route("/create", methods=[POST])
 def create_ship():
     user = verify_is_logged_in()
     user = user_service.get_by_id(user)
     if not user:
         return redirect("/login")
 
-    if request.method == POST:
-        ship = save_ship_dto(create_ship_dto(request.form))
-        update_user(user, ship)
+    ship = create_ship_dto(request.form)
+    update_user(user, ship)
 
-    return render_template("create.html", content="components/ship_create.html")
+    return ship.json
 
 
-@ship_pages.route("/edit/<int:ship_id>", methods=[GET, POST])
+def update_ship(ship_id: int, data: dict):
+    ship = ship_service.get_by_id(ship_id)
+    ship.name = data[name]
+    ship.capacity = int(data[capacity].replace('"', ""))
+    ship.sailors = int(data[sailors].replace('"', ""))
+    ship.level = int(data[level].replace('"', ""))
+    success_state, ship, err = ship_service.save(ship)
+    return {
+        "success": success_state,
+        "data": ship.json if ship else None,
+        "error": err.json if err else None,
+    }
+
+
+@ship_pages.route("/edit/<int:ship_id>", methods=[POST])
 def edit_ship(ship_id: int):  # todo: this is not being called for id 1
     if not verify_is_logged_in():
         return redirect("/login")
-    ship = ship_service.get_by_id(ship_id)
-    if request.method == POST:
-        ship.name = request.form[name]
-        ship.capacity = request.form[capacity]
-        ship.sailors = request.form[sailors]
-        ship.level = request.form[level]
-        ship_service.save(ship)
 
-        return redirect("/user")
+    ship_data = request.form
+    resp = update_ship(ship_id, ship_data)
 
-    return render_template("edit.html", content="components/ship_edit.html", ship=ship)
+    return resp
 
 
-@ship_pages.route("/level-up/<int:ship_id>")
-def level_up(ship_id):
-    user = verify_is_logged_in()
-    user = user_service.get_by_id(user)
-    if user:
-        ship = ship_service.get_by_id(ship_id)
-        ship.level += 1
-        ship_service.save(ship)
-        return redirect("/user")
-    return redirect("/login")
-
-
-@ship_pages.route("/delete/<int:ship_id>")
+@ship_pages.route("/delete/<int:ship_id>", methods=["POST"])
 def delete_ship(ship_id: int):
     user = verify_is_logged_in()
-    user = user_service.get_by_id(user)
-    if user:
-        user.ships.remove(list(filter(lambda s: s.id == ship_id, user.ships))[0])
-        ship_service.delete(ship_id)
-        user_service.save(user)
+    if not user:
+        return redirect("/login")
 
-    return redirect("/user")
+    user = user_service.get_by_id(user)
+    user.ships.remove(list(filter(lambda s: s.id == ship_id, user.ships))[0])
+    ship_service.delete(ship_id)
+    user_service.save(user)
+
+    return True

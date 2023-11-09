@@ -3,16 +3,7 @@ from typing import List, Dict
 
 from app.models.quest import QuestDTO, Resource
 from app.models.ship import ShipDTO
-from algorithm.questProcessor import Algorithm
-
-
-class AlgoResult:
-    round_count: int
-    rounds: [Dict[str, List[ShipDTO]]]
-
-    def __init__(self):
-        self.round_count = 0
-        self.rounds = [{}]
+from algorithm.questProcessor import Algorithm, AlgoResult
 
 
 class CapacityAlgorithm(Algorithm):
@@ -22,7 +13,7 @@ class CapacityAlgorithm(Algorithm):
     @property
     def calculate_rounds(
         self,
-    ):
+    ) -> List[Dict[str, List[ShipDTO]]]:
         rounds = []
         total_amount = 0
         for r in self.quest.resources:
@@ -85,7 +76,7 @@ class CapacityAlgorithm(Algorithm):
         return rounds
 
     @property
-    def calculate(self):
+    def calculate(self) -> AlgoResult:
         result = AlgoResult()
         if not self.quest.resources or not self.ships:
             return result
