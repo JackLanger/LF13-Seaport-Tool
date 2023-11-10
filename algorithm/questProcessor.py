@@ -14,7 +14,8 @@ class AlgoResult:
         self.round_count = n
         self.rounds = rounds
 
-    def to_string(self):
+    @property
+    def json(self):
         _rounds = []
         for r in self.rounds:
             _rounds.append(r)

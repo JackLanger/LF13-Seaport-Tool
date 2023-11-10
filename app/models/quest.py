@@ -42,3 +42,15 @@ class QuestDTO:
         self.id = id
         self.title = title
         self.resources = resources
+
+    @property
+    def json(self):
+        import json
+
+        json_resources = []
+        for res in self.resources:
+            json_resources.append({"name": res.name, "amount": res.amount})
+
+        return json.dumps(
+            {"id": self.id, "title": self.title, "resources": json_resources}
+        )

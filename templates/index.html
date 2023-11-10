@@ -3,17 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <title>Seaport Hacks</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='style/seaport.css') }}">
 </head>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 <body>
 {% from 'macros.jinja' import icon,ship_card with context %}
+{##################################}
+{#         Navbar                 #}
+{##################################}
 {% include 'components/navbar.html' %}
 
 <div class="banner-wrapper">
@@ -29,172 +32,17 @@
 {##################################}
 {#         SHIPS                  #}
 {##################################}
-
-<article>
-{% from 'macros.jinja' import ship_card,icon,floppy,can with context %}
-{% from 'svg.jinja' import can,floppy with context %}
-    <div id="ship-list" class="color-white p-5 m-5 container row">
-        {% for ship in user.ships %}
-        <div id="ship-{{ ship.id }}-form" style="cursor: pointer" class="card ship-card pointer color-white m-3" >
-            <div class="card-body text-center">
-            <input
-            type="textcheckbox"
-            id="ship-{{ ship.id }}-selected"
-            name="isSelected"
-            value="false"
-            class="form-control ship-selected-checkbox"
-            data-toggle="tooltip"
-            data-placement="top"
-            title="Select {{ ship.name }} for solving any quests."
-            >
-                <div class="row col-12 align-items-center">
-
-                        <div class="col-12">
-                            <p name="name" id="ship-{{ ship.id }}" style="cursor: pointer" class="card-title font-weight-bold h2 white" >{{ ship.name }}</p>
-                        </div>
-
-                        <script type="text/javascript">
-                            $('#ship-{{ ship.id }}').click( function () {
-                                console.log("ship-{{ ship.id }}")
-                                let buttons =$('#edit-btns-{{ ship.id }}')
-
-                                if (buttons.is(':hidden')){
-                                    buttons.show()
-                                } else{
-                                    console.log("button-{{ ship.id }} is visible")
-                                    buttons.hide()
-                                }
-                            });
-                        </script>
-
-                        <div class="row">
-                            {{ icon('cargo.svg', ship.capacity,'capacity') }}
-                            {{ icon('sailor.svg', ship.sailors,'sailors') }}
-                            {{ icon('stars-level.svg', ship.level,'level') }}
-                        </div>
-                        <p
-                        id="error-message-{{ ship.id }}"
-                        style="color: red" hidden></p>
-
-                        <div class="edit-buttons" id="edit-btns-{{ ship.id }}">
-                            <button
-                                id="submit-btn-{{ ship.id }}"
-                                type="submit"
-                                class="btn">
-                            {{ floppy() }}
-                            </button>
-
-                            <button
-                                id="delete-btn-{{ ship.id }}"
-                                type="submit"
-                                class="btn">
-                                {{ can() }}
-                            </button>
-                        </div>
-                    <script type="text/javascript">
-
-                    $('#edit-btns-{{ ship.id }}').hide();
-
-                    // DELETE SHIP
-                    $('#delete-btn-{{ ship.id }}').click(function(e){
-                        $.ajax('/ships/delete/{{ ship.id }}', {
-                            method: 'POST',
-                            success: function(data) {
-                                $('#ship-{{ ship.id }}-form').remove()
-                            },
-                            error: function(error) {
-                                console.log(error);
-                                $('#error-message-{{ ship.id }}').text(error.message);
-                            }
-                        })
-                    })
-                    // SAVE OR UPDATE
-                    $('#submit-btn-{{ ship.id }}').click(function(){
-                        console.log("submit-button-{{ ship.id}} clicked")
-                        const formData = new FormData( );
-                        {#formData.append('name', '{{ ship.name }}');#}
-                        Array.from($('#ship-{{ ship.id }}-form').children().find('input')).forEach(i=>{
-                            formData.append(i.name, JSON.stringify(i.value))
-                        })
-                        console.log(formData)
-                        $('#error-message-{{ ship.id }}').hide();
-
-                        $.ajax('/ships/edit/{{ ship.id }}', {
-                            method: 'POST',
-                            data: formData,
-                            dataType: 'json',
-                            contentType: false,
-                            processData: false,
-                            success: function(data) {
-                                console.log(data)
-                                $('#edit-btns-{{ ship.id }}').hide();
-                            },
-                            error: function( jqXhr, textStatus, errorThrown ){
-                                console.log( errorThrown );
-                                $('#edit-btns-{{ ship.id }}').hide();
-                                $('#error-message-{{ ship.id }}').show();
-                                $('#error-message-{{ ship.id }}').text("Something went wrong, please try again.")
-                            }
-                        });
-                    });
-                    </script>
-                </div>
-            </div>
-        </div>
-        {% endfor %}
-
-        {#    create a new ship #}
-
-        {% from 'macros.jinja' import create_ship_card with context %}
-            {{ create_ship_card() }}
-        <div class="ship-card m-3">
-            <p id="collapse-create-ship" onclick="extend_or_expand('create_ship_form',this)">+</p>
-        </div>
-
-    </div>
-</article>
+{% include 'components/ships.html' %}
 
 {##################################}
 {#         QUESTS                 #}
 {##################################}
+{% include 'components/quests.html' %}
 
-<article>
-{% from 'quest.jinja' import quest_card with context %}
-<h2>Quests</h2>
-<div class="container">
-    <script type="text/javascript" src="{{ url_for('static',filename='js/main.js' ) }}"></script>
-    {% for quest in user.quests %}
-        <div class="card transparent color-white" style="width: 18rem;">
-            {{ quest_card(quest) }}
-        </div>
-    {% endfor %}
-</div>
-
-{#{% from 'macros.jinja' import create_quest with context %}#}
-{#<div class="container overlap w-50 m-5 p-5">#}
-{#    <button class="btn top-level btn-light big-font p-0 round" id="collapse-quests" onclick="extend_or_expand('createQuestForm')">#}
-{#        +#}
-{#    </button>#}
-{#    {{ create_quest( user ) }}#}
-{#</div>#}
-</article>
-
-<footer>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-6">
-                <p>&copy; 2023 Long Duerpsch VWgl & Co. Kg. All rights reserved.</p>
-            </div>
-            <div class="col-md-6">
-                <ul class="list-inline text-md-end">
-                    <li class="list-inline-item"><a href="/info/privacy-policy">Privacy Policy</a></li>
-                    <li class="list-inline-item"><a href="/info/terms-of-service">Terms of Service</a></li>
-                    <li class="list-inline-item"><a href="/info/contact">Contact Us</a></li>
-                </ul>
-            </div>
-        </div>
-    </div>
-</footer>
+{##################################}
+{#         Footnote               #}
+{##################################}
+{% include 'components/footer.html' %}
 
 <script type="text/ecmascript-6" src="{{ url_for('static', filename='js/main.js') }}"></script>
 <script type="text/javascript">
@@ -217,21 +65,6 @@
             }
         });
     });
-
-    function extend_or_expand(id,btn){
-
-        let form = $(`#${id}`);
-        if (form.is(':hidden')) {
-            form.show();
-            btn.innerHTML = '-'
-            $('#collapse-create-ship').hide()
-        }
-        else {
-            form.hide();
-            btn.innerHTML = '+'
-        }
-    }
-
 </script>
 
 </body>
