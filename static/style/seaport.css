@@ -111,7 +111,7 @@ footer {
 }
 
 .ship-icon {
-    max-height: 80%;
+    max-height: 30px;
 }
 
 .icon-wrapper {
@@ -124,9 +124,14 @@ footer {
 }
 
 .small-icon {
-    display: inline-block;
-    max-height: 10px;
-    max-width: 10px;
+    max-height: 30px;
+    max-width: 30px;
+}
+.inline-icon img{
+    max-height: 80% !important;
+}
+.row input{
+    max-height:80% !important;
 }
 
 .ship-card {
@@ -227,4 +232,22 @@ footer {
     color: #008800;
     background: white;
     border-color: white;
+}
+
+.ship-card-image{
+    position: relative;
+    object-fit: cover;
+    padding:10px;
+    min-height:20vh;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+.ship-card-image img{
+
+    border-radius: 10px;
+}
+
+.background-light{
+    background-color: rgba(255, 255, 255, 0.5);
 }

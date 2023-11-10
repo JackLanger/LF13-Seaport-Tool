@@ -23,6 +23,8 @@
                             <p name="name" id="ship-{{ ship.id }}" style="cursor: pointer" class="card-title font-weight-bold h2 white" >{{ ship.name }}</p>
                         </div>
 
+                        <hr style="width:100%; color:white;margin:1rem;" >
+
                         <script type="text/javascript">
                             $('#ship-{{ ship.id }}').click( function () {
                                 console.log("ship-{{ ship.id }}")
@@ -36,11 +38,16 @@
                             });
                         </script>
 
-                        <div class="row">
-                            {{ icon('cargo.svg', ship.capacity,'capacity') }}
-                            {{ icon('sailor.svg', ship.sailors,'sailors') }}
-                            {{ icon('stars-level.svg', ship.level,'level') }}
+                        <div class="ship-card-image">
+                            <img src="{{url_for('static', filename='resources/level_3_ship.jpg')}}" alt="ship_image">
                         </div>
+
+                        <hr style="width:100%; color:white;margin:1rem;" >
+
+                        {{ icon(ship,ship.capacity, 'cargo.svg', 'capacity') }}
+                        {{ icon(ship,ship.sailors, 'sailor.svg', 'sailors') }}
+                        {{ icon(ship,ship.level, 'stars-level.svg', 'level') }}
+
                         <p
                                 id="error-message-{{ ship.id }}"
                                 style="color: red" hidden></p>

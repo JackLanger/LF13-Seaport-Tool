@@ -1,6 +1,6 @@
 import uuid
 
-from flask import Blueprint, redirect, render_template, request
+from flask import Blueprint, redirect, render_template, request, jsonify
 
 from app.dal.service import ShipService, UserService
 from app.models.ship import ShipDTO
@@ -46,16 +46,17 @@ def create_ship():
 
 def update_ship(ship_id: int, data: dict):
     ship = ship_service.get_by_id(ship_id)
-    ship.name = data[name]
+    if name in data:
+        ship.name = data[name]
     ship.capacity = int(data[capacity].replace('"', ""))
     ship.sailors = int(data[sailors].replace('"', ""))
     ship.level = int(data[level].replace('"', ""))
     success_state, ship, err = ship_service.save(ship)
-    return {
-        "success": success_state,
-        "data": ship.json if ship else None,
-        "error": err.json if err else None,
-    }
+    return jsonify(
+        success=success_state,
+        data=ship.json if ship else None,
+        error=err.json if err else None,
+    )
 
 
 @ship_pages.route("/edit/<int:ship_id>", methods=[POST])
@@ -64,9 +65,7 @@ def edit_ship(ship_id: int):  # todo: this is not being called for id 1
         return redirect("/login")
 
     ship_data = request.form
-    resp = update_ship(ship_id, ship_data)
-
-    return resp
+    return update_ship(ship_id, ship_data)
 
 
 @ship_pages.route("/delete/<int:ship_id>", methods=["POST"])
@@ -76,8 +75,11 @@ def delete_ship(ship_id: int):
         return redirect("/login")
 
     user = user_service.get_by_id(user)
-    user.ships.remove(list(filter(lambda s: s.id == ship_id, user.ships))[0])
-    ship_service.delete(ship_id)
+    ships = list(filter(lambda s: s.id != ship_id, user.ships))
+    if len(ships) == len(user.ships):
+        return jsonify(success=False, error="Ship not found")
+
+    user.ships = ships
     user_service.save(user)
 
-    return True
+    return jsonify(success=True)
