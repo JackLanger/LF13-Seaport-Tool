@@ -17,6 +17,8 @@
                                 title="Select {{ ship.name }} for solving any quests.">
                         <label id="ship-{{ ship.id }}-selected_label" for="ship-{{ ship.id }}-selected" class="form-check-label white"></label>
                     </div>
+                    <div class="ship-data-container">
+
                     <div class="row col-12 align-items-center">
 
                         <div class="col-12">
@@ -47,7 +49,7 @@
                         {{ icon(ship,ship.capacity, 'cargo.svg', 'capacity') }}
                         {{ icon(ship,ship.sailors, 'sailor.svg', 'sailors') }}
                         {{ icon(ship,ship.level, 'stars-level.svg', 'level') }}
-
+                    </div>
                         <p
                                 id="error-message-{{ ship.id }}"
                                 style="color: red" hidden></p>
