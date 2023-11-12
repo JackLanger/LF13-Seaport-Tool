@@ -1,4 +1,4 @@
-from typing import List, Dict
+from typing import List, Dict, Tuple
 
 from flask import json
 
@@ -8,22 +8,22 @@ from app.models.ship import ShipDTO
 
 class AlgoResult:
     round_count: int
-    rounds: [Dict[str, List[ShipDTO]]]
+    rounds: List[List[Tuple[ShipDTO, str]]]
 
-    def __init__(self, n=0, rounds=[{}]):
+    def __init__(self, n=0, rounds=None):
         self.round_count = n
-        self.rounds = rounds
+        self.rounds = rounds if rounds is not None else []
 
-    @property
-    def json(self):
-        _rounds = []
-        for r in self.rounds:
-            _rounds.append(r)
-            for k in r:
-                for s in r[k]:
-                    s = s.json
+    def add_round(self, round_data):
+        self.rounds.append(round_data)
 
-        return json.dumps({"round_count": self.round_count, "rounds": _rounds})
+    def print_result(self):
+        print(f"Round Count: {self.round_count}")
+        for i, round_data in enumerate(self.rounds):
+            print(f"Round {i + 1}:")
+            for ship, resource in round_data:
+                print(f"  Ship Name: {ship.name}, Capacity: {ship.capacity}, Resource: {resource}")
+            print("\n")
 
 
 class Algorithm:
@@ -41,4 +41,4 @@ class QuestProcessor:
         self.__algorithm = algorithm
 
     def process_quest(self) -> AlgoResult:
-        return self.__algorithm.calculate
+        return self.__algorithm.calculate()
