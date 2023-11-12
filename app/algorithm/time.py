@@ -38,7 +38,6 @@ class Cap:
     def __init__(self,ships,quest):
         self.ships = ships
         self.quest = []
-        self.registry = []
         self.miniround = []
         self.biground = []
         
@@ -53,18 +52,6 @@ class Cap:
         for package in self.quest:
             amount += len(package.content)
         return amount
-    
-    def checkAllCargo(self):
-        cargo = 0
-        for car in self.ships:
-            cargo += car.capacity
-        return cargo
-    
-    def checkShipCargo(self,ship):
-        if ship.capacity > 0:
-            return True
-        else:
-            return False
     
     def checkResource(self,ship,resource):
         if not ship.storage or ship.storage[0].name == resource.name:
