@@ -125,6 +125,18 @@
     </div>
 
 <script type="text/javascript">
+    function extend_or_expand(id,btn){
+
+            let form = $(`#${id}`);
+            if (form.is(':hidden')) {
+                form.show();
+                $('#collapse-create-ship').hide()
+            }
+            else {
+                form.hide();
+            }
+        }
+
     function toggleAllShips() {
         const allCheckboxes = $("[id^='ship-'][id$='-selected']");
         const areAllSelected = allCheckboxes.length > 0 && allCheckboxes.length === allCheckboxes.filter(':checked').length;
