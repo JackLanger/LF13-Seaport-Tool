@@ -9,6 +9,7 @@ class TimeAlgorithm(Algorithm):
     def __init__(self, ships: List[ShipDTO], quest: QuestDTO):
         super().__init__(ships, quest)
 
+    @property
     def calculate(self) -> AlgoResult:
         total_amount = 0
         total_capacity = 0

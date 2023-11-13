@@ -116,4 +116,7 @@ def compute_quest(quest_id):
             algo = CapacityAlgorithm(user.ships, quest)
         case _:
             return jsonify(success=False, code=500, error="Unknown algorithm")
-    return jsonify(success=True, code=200, result=algo.calculate.json)
+
+    result = algo.calculate.json
+
+    return jsonify(success=True, code=200, result=result)

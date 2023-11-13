@@ -1,6 +1,6 @@
 from typing import List, Dict
 
-from flask import json
+from flask import json, jsonify
 
 from app.models.quest import QuestDTO
 from app.models.ship import ShipDTO
@@ -18,10 +18,15 @@ class AlgoResult:
     def json(self):
         _rounds = []
         for r in self.rounds:
-            _rounds.append(r)
+            if not r or len(r) == 0:
+                continue
+
+            dict = {}
             for k in r:
+                dict[k] = []
                 for s in r[k]:
-                    s = s.json
+                    dict[k].append( s.json)
+            _rounds.append(dict)
 
         return json.dumps({"round_count": self.round_count, "rounds": _rounds})
 
