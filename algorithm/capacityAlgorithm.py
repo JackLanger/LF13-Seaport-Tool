@@ -1,7 +1,6 @@
-import math
-from typing import List, Dict
+from typing import List
+from app.models.quest import QuestDTO
 
-from app.models.quest import QuestDTO, Resource
 from app.models.ship import ShipDTO
 from algorithm.questProcessor import Algorithm, AlgoResult
 
@@ -10,76 +9,63 @@ class CapacityAlgorithm(Algorithm):
     def __init__(self, ships: List[ShipDTO], quest: QuestDTO):
         super().__init__(ships, quest)
 
-    @property
-    def calculate_rounds(
-        self,
-    ) -> List[Dict[str, List[ShipDTO]]]:
-        rounds = []
-        total_amount = 0
-        for r in self.quest.resources:
-            total_amount += r.amount
+    @staticmethod
+    def create_new_round(ships, quest, result):
+        new_round = []
+        used_ships = set()
 
-        def add_ship(ship):
-            r.amount -= s.capacity
-            ships_used_this_round.append(s)
-            current_turn[r.name].append(s)
+        round_resources = []
 
-        while total_amount > 0:
-            current_turn = {}
-            ships_used_this_round = []
-            for r in self.quest.resources:
-                current_turn[r.name] = []
-                if r.amount == 0:
-                    continue
-                if len(ships_used_this_round) == len(self.ships):
-                    break
+        for resource in quest.resources:
+            if resource.amount > 0:
+                differences = [
+                    (ship, abs(ship.capacity - resource.amount))
+                    for ship in ships
+                    if ship not in used_ships
+                ]
+                differences.sort(key=lambda x: x[1])
 
-                for s in self.ships:
-                    if r.amount / s.capacity == 1:
-                        add_ship(s)
-                        total_amount -= s.capacity
-                        break
+                selected_ship, _ = (
+                    differences[0] if differences else (None, float("inf"))
+                )
 
-                for s in self.ships:
-                    if s not in ships_used_this_round and r.amount >= s.capacity:
-                        add_ship(s)
-                        total_amount -= s.capacity
-                        if r.amount == 0:
-                            break
-            if not ships_used_this_round:
-                break
-            rounds.append(current_turn)
+                if selected_ship:
+                    if selected_ship.capacity == resource.amount:
+                        used_ships.add(selected_ship)
+                        resource.amount = 0
+                        round_resources.append((selected_ship, resource.name))
+                    else:
+                        used_ships.add(selected_ship)
+                        resource.amount -= selected_ship.capacity
+                        round_resources.append((selected_ship, resource.name))
 
-        def find_best_fit_for_excess(new_round, amount):
-            sorted_by_capacity = sorted(self.ships, key=lambda x: x.capacity)
-            for s in sorted_by_capacity:
-                if (new_round and s.capacity >= amount) or (
-                    s not in rounds[len(rounds) - 1][r.name]
-                ):
-                    return s
-            return None
+        new_round.extend(round_resources)
 
-        for r in self.quest.resources:
-            if r.amount > 0:
-                s = find_best_fit_for_excess(False, r.amount)
-                s_new_round = find_best_fit_for_excess(True, r.amount)
+        if new_round:
+            result.append(new_round)
 
-                if s.capacity < s_new_round.capacity:
-                    rounds[len(rounds) - 1][r.name].append(s)
-                    r.amount -= s.capacity
-                    total_amount -= s.capacity
-                else:
-                    rounds.append({r.name: [s_new_round]})
-                    r.amount -= s_new_round.capacity
-                    total_amount -= s_new_round.capacity
-
-        return rounds
-
-    @property
     def calculate(self) -> AlgoResult:
-        result = AlgoResult()
-        if not self.quest.resources or not self.ships:
-            return result
-        result.rounds = self.calculate_rounds
-        result.round_count = len(result.rounds)
+        result = []
+
+        while any(resource.amount > 0 for resource in self.quest.resources):
+            self.create_new_round(self.ships, self.quest, result)
+
+        result = AlgoResult(len(result), result)
         return result
+
+
+# if __name__ == "__main__":
+#     ship1 = ShipDTO(ship_id=1, name="Ship1", capacity=20, sailors=10)
+#     ship2 = ShipDTO(ship_id=2, name="Ship2", capacity=15, sailors=10)
+#     ship3 = ShipDTO(ship_id=3, name="Ship3", capacity=25, sailors=10)
+#
+#     ships = [ship1, ship2, ship3]
+#
+#     resources = [Resource(name="Wood", amount=30), Resource(name="Fish", amount=50)]
+#
+#     quest = QuestDTO(id=1, title="Sample Quest", resources=resources)
+#     time_algo = CapacityAlgorithm(ships, quest)
+#     result = time_algo.calculate()
+#
+#     result.print_result()
+

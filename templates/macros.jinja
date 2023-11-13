@@ -7,17 +7,18 @@
 {%- endmacro %}
 
 {# a single icon used in the ship cards #}
-{% macro icon(ship,value,img,attribute) -%}
+{% macro icon(ship, value, img, attribute) -%}
     <div class="container">
         <div class="row">
-            <label for="ship-{{ ship.id }}-{{ attribute }}" class="col-sm-5">{{ attribute }}:</label>
-            <input id = "ship-{{ ship.id }}-{{ attribute }}" name="{{ attribute }}" class="col-sm-5 transparent w-25 white" type="text" value="{{ value }}">
-            <div class="col inline-icon" >
+            <div class="col inline-icon">
                 <img src="{{ url_for('static', filename='resources/' + img) }}" alt="">
             </div>
+            <label for="ship-{{ ship.id }}-{{ attribute }}" class="col-sm-5 no-wrap">{{ attribute }}:</label>
+            <input id="ship-{{ ship.id }}-{{ attribute }}" name="{{ attribute }}" class="col-sm-5 transparent w-25 white" type="text" value="{{ value }}">
         </div>
     </div>
 {%- endmacro %}
+
 
 
 {% macro create_ship_card() -%}
