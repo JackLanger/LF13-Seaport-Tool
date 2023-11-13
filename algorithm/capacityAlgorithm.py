@@ -1,5 +1,6 @@
 from typing import List
 from app.models.quest import QuestDTO
+
 from app.models.ship import ShipDTO
 from algorithm.questProcessor import Algorithm, AlgoResult
 
@@ -67,3 +68,4 @@ class CapacityAlgorithm(Algorithm):
 #     result = time_algo.calculate()
 #
 #     result.print_result()
+

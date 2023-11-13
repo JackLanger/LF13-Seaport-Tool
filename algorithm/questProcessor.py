@@ -1,5 +1,6 @@
 from typing import List, Dict, Tuple
 
+
 from flask import json
 
 from app.models.quest import QuestDTO
@@ -25,7 +26,6 @@ class AlgoResult:
                 print(f"  Ship Name: {ship.name}, Capacity: {ship.capacity}, Resource: {resource}")
             print("\n")
 
-
 class Algorithm:
     def __init__(self, ships: List[ShipDTO], quest: QuestDTO):
         self.ships = ships
@@ -41,4 +41,4 @@ class QuestProcessor:
         self.__algorithm = algorithm
 
     def process_quest(self) -> AlgoResult:
-        return self.__algorithm.calculate()
+        return self.__algorithm.calculate

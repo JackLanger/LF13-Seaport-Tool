@@ -98,12 +98,12 @@
                                     dataType: 'json',
                                     contentType: false,
                                     processData: false,
-                                    success: function (data) {
+                                    success: function(data) {
                                         console.log(data)
                                         $('#edit-btns-{{ ship.id }}').hide();
                                     },
-                                    error: function (jqXhr, textStatus, errorThrown) {
-                                        console.log(errorThrown);
+                                    error: function( jqXhr, textStatus, errorThrown ){
+                                        console.log( errorThrown );
                                         $('#edit-btns-{{ ship.id }}').hide();
                                         $('#error-message-{{ ship.id }}').show();
                                         $('#error-message-{{ ship.id }}').text("Something went wrong, please try again.")
@@ -116,7 +116,8 @@
             </div>
         {% endfor %}
 
-        {# create a new ship #}
+        {#    create a new ship #}
+
         {% from 'macros.jinja' import create_ship_card with context %}
         {{ create_ship_card() }}
         <div class="ship-card m-3 p-0">
