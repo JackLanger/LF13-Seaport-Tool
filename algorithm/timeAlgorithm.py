@@ -1,14 +1,48 @@
-from typing import List
+from typing import List, Dict
 
-from app.enums.algorithm_type_enum import AlgorithmType
-from app.models.quest import Quest
-from app.models.ship import Ship
-from questProcessor import QuestProcessor, Algorithm
+from app.models.quest import QuestDTO
+from app.models.ship import ShipDTO
+from algorithm.questProcessor import Algorithm, AlgoResult
 
 
 class TimeAlgorithm(Algorithm):
-    def __init__(self, algorithm_type: AlgorithmType, ships: List[Ship], quest: Quest):
-        super().__init__(algorithm_type, ships, quest)
+    def __init__(self, ships: List[ShipDTO], quest: QuestDTO):
+        super().__init__(ships, quest)
 
-    def calculate(self):
-        print("time")
+    def calculate(self) -> AlgoResult:
+        total_amount = 0
+        total_capacity = 0
+
+        for r in self.quest.resources:
+            total_amount += r.amount
+
+        for s in self.ships:
+            total_capacity += s.capacity
+
+        result = []
+        used_ships = []
+        current = {}
+        ships_by_capacity = sorted(self.ships, key=lambda x: x.capacity, reverse=True)
+
+        while total_amount > 0:
+            for r in self.quest.resources:
+                if r.amount > 0 and total_capacity <= r.amount:
+                    result.append({r.name: self.ships})
+                    total_amount -= r.amount
+                    r.amount -= total_capacity
+
+                else:
+                    current[r.name] = []
+
+                    for s in ships_by_capacity:
+                        if s not in used_ships:
+                            used_ships.append(s)
+                            r.amount -= s.capacity
+                            current[r.name].append(s)
+
+                        if r.amount <= 0:
+                            break
+
+        result.append(current)
+        result = AlgoResult(len(result), result)
+        return result

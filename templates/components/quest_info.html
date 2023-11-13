@@ -15,7 +15,31 @@
 			<h2>Resources:</h2>
 			{{ resource_table(quest) }}
 		</div>
-		<a class="btn btn-success m-1" href="/quests/{{ quest.id }}/compute">Compute</a>
+		<button class="btn btn-success m-1" onclick="compute()">Compute</button>
 		<a class="btn btn-secondary m-1" href="/">Back</a>
 	</div>
+
+    <table id="result-table">
+        <tr>
+            <th>Round</th>
+            <th>Ships</th>
+            <th>Resources to move</th>
+        </tr>
+    </table>
 </div>
+<script
+        src="https://code.jquery.com/jquery-3.6.1.js"
+        integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI="
+        crossorigin="anonymous"></script>
+
+<script type="text/javascript">
+    function compute(){
+        $.ajax({
+            url: "/quests/{{ quest.id }}/compute",
+            type: "POST",
+            success: function(data){
+                console.log(data);
+            }
+        });
+    }
+</script>

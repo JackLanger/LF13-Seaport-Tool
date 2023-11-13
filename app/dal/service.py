@@ -1,4 +1,5 @@
 import uuid
+from typing import Dict
 
 from app.models.quest import QuestDTO, Resource
 from app.models.ship import ShipDTO
@@ -13,6 +14,22 @@ ships = [
 ]
 
 
+class Error:
+    def __init__(self, error_code: int, msg: str):
+        self.error_code = error_code
+        self.msg = msg
+
+    def json(self):
+        import json
+
+        return json.dumps(
+            {
+                "error_code": self.error_code,
+                "msg": self.msg,
+            }
+        )
+
+
 class ShipService:
     def __int__(self):
         pass
@@ -20,11 +37,13 @@ class ShipService:
     def get_by_id(self, ship_id) -> ShipDTO:
         return list(filter(lambda s: s.id == ship_id, ships))[0]
 
-    def create_new(self, ShipDto) -> ShipDTO:
-        pass
+    def create_new(self, ship) -> ShipDTO:
+        ship.id = len(ships) + 1
+        ships.append(ship)
+        return ship
 
-    def save(self, ShipDto):
-        pass
+    def save(self, ship) -> (bool, ShipDTO, Error):
+        return True, ship, None
 
     def delete(self, ship_id):
         pass

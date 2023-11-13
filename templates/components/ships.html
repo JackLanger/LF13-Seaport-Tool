@@ -1,0 +1,156 @@
+<article>
+    {% from 'macros.jinja' import ship_card,icon with context %}
+    {% from 'svg.jinja' import can,floppy with context %}
+    <div id="ship-list" class="color-white p-5 m-5 container row">
+        {% for ship in user.ships %}
+            <div id="ship-{{ ship.id }}-form" style="cursor: pointer" class="card ship-card pointer color-white m-3" >
+                <div class="card-body text-center">
+                    <div class="form-check form-switch top-left-checkbox-container">
+                        <input
+                                type="checkbox"
+                                id="ship-{{ ship.id }}-selected"
+                                name="isSelected"
+                                value="false"
+                                class="form-check-input"
+                                data-toggle="tooltip"
+                                data-placement="top"
+                                title="Select {{ ship.name }} for solving any quests.">
+                        <label id="ship-{{ ship.id }}-selected_label" for="ship-{{ ship.id }}-selected" class="form-check-label white"></label>
+                    </div>
+                    <div class="ship-data-container">
+
+                    <div class="row col-12 align-items-center">
+
+                        <div class="col-12">
+                            <p name="name" id="ship-{{ ship.id }}" style="cursor: pointer" class="card-title font-weight-bold h2 white" >{{ ship.name }}</p>
+                        </div>
+
+                        <hr style="width:100%; color:white;margin:1rem;" >
+
+                        <script type="text/javascript">
+                            $('#ship-{{ ship.id }}').click( function () {
+                                console.log("ship-{{ ship.id }}")
+                                let buttons =$('#edit-btns-{{ ship.id }}')
+                                if (buttons.is(':hidden')){
+                                    buttons.show()
+                                } else{
+                                    console.log("button-{{ ship.id }} is visible")
+                                    buttons.hide()
+                                }
+                            });
+                        </script>
+
+                        <div class="ship-card-image">
+                            <img src="{{url_for('static', filename='resources/level_3_ship.jpg')}}" alt="ship_image">
+                        </div>
+
+                        <hr style="width:100%; color:white;margin:1rem;" >
+
+                        {{ icon(ship,ship.capacity, 'cargo.svg', 'capacity') }}
+                        {{ icon(ship,ship.sailors, 'sailor.svg', 'sailors') }}
+                        {{ icon(ship,ship.level, 'stars-level.svg', 'level') }}
+                    </div>
+                        <p
+                                id="error-message-{{ ship.id }}"
+                                style="color: red" hidden></p>
+
+                        <div class="edit-buttons" id="edit-btns-{{ ship.id }}">
+                            <button
+                                    id="submit-btn-{{ ship.id }}"
+                                    type="submit"
+                                    class="btn">
+                                {{ floppy() }}
+                            </button>
+
+                            <button
+                                    id="delete-btn-{{ ship.id }}"
+                                    type="submit"
+                                    class="btn">
+                                {{ can() }}
+                            </button>
+                        </div>
+                        <script type="text/javascript">
+
+
+                            $('#ship-{{ ship.id }}-selected').click(e=>{
+                                const label = $('#ship-{{ ship.id }}-selected_label')
+                                if(e.target.checked){
+                                    label.text('Selected')
+                                } else{
+                                    label.text('')
+                                }
+                            })
+
+                            $('#edit-btns-{{ ship.id }}').hide();
+
+                            // DELETE SHIP
+                            $('#delete-btn-{{ ship.id }}').click(function(e){
+                                $.ajax('/ships/delete/{{ ship.id }}', {
+                                    method: 'POST',
+                                    success: function(data) {
+                                        $('#ship-{{ ship.id }}-form').remove()
+                                    },
+                                    error: function(error) {
+                                        console.log(error);
+                                        $('#error-message-{{ ship.id }}').text(error.message);
+                                    }
+                                })
+                            })
+                            // SAVE OR UPDATE
+                            $('#submit-btn-{{ ship.id }}').click(function(){
+                                console.log("submit-button-{{ ship.id}} clicked")
+                                const formData = new FormData( );
+                                Array.from($('#ship-{{ ship.id }}-form').children().find('input')).forEach(i=>{
+                                    formData.append(i.name, JSON.stringify(i.value))
+                                })
+                                console.log(formData)
+                                $('#error-message-{{ ship.id }}').hide();
+
+                                $.ajax('/ships/edit/{{ ship.id }}', {
+                                    method: 'POST',
+                                    data: formData,
+                                    dataType: 'json',
+                                    contentType: false,
+                                    processData: false,
+                                    success: function(data) {
+                                        console.log(data)
+                                        $('#edit-btns-{{ ship.id }}').hide();
+                                    },
+                                    error: function( jqXhr, textStatus, errorThrown ){
+                                        console.log( errorThrown );
+                                        $('#edit-btns-{{ ship.id }}').hide();
+                                        $('#error-message-{{ ship.id }}').show();
+                                        $('#error-message-{{ ship.id }}').text("Something went wrong, please try again.")
+                                    }
+                                });
+                            });
+                        </script>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+
+        {#    create a new ship #}
+
+        {% from 'macros.jinja' import create_ship_card with context %}
+        {{ create_ship_card() }}
+        <div class="ship-card m-3 p-0">
+            <p id="collapse-create-ship" onclick="extend_or_expand('create_ship_form',this)">+</p>
+        </div>
+
+    </div>
+
+    <script type="text/javascript">
+        function extend_or_expand(id,btn){
+
+            let form = $(`#${id}`);
+            if (form.is(':hidden')) {
+                form.show();
+                $('#collapse-create-ship').hide()
+            }
+            else {
+                form.hide();
+            }
+        }
+    </script>
+</article>

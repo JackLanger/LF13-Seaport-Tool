@@ -1,7 +1,10 @@
 import json
-from typing import List
 
-from flask import Blueprint, render_template, redirect, make_response, request
+from flask import Blueprint, render_template, redirect, request, jsonify
+
+from algorithm.capacityAlgorithm import CapacityAlgorithm
+from algorithm.timeAlgorithm import TimeAlgorithm
+from app.models.quest import Resource
 from app.routes.validation.login_validation import verify_is_logged_in
 from app.dal.service import UserService
 from app.routes.constants import GET, POST
@@ -28,36 +31,26 @@ def display_quests(user_id: str):
     )
 
 
-@quest_pages.route("/delete/<int:id>", methods=[GET])
+@quest_pages.route("/delete/<int:id>", methods=[POST])
 def delete_quest(id):
-    user = verify_is_logged_in()
-    if not user:
-        return redirect("/login")
-    user = service.get_by_id(user)
-    quest = list(filter(lambda q: q.id == id, user.quests))[0]
-    user.quests.remove(quest)
-    service.save(user)
-    return redirect("/")
+    from flask import jsonify
 
-
-@quest_pages.route("/info/<int:id>", methods=[GET])
-def info_page(id):
     user = verify_is_logged_in()
     if not user:
         return redirect("/login")
 
     user = service.get_by_id(user)
-    ships = user.ships
     quest = list(filter(lambda q: q.id == id, user.quests))[0]
-    return render_template(
-        "index.html",
-        page_content="components/quest_info.html",
-        quest=quest,
-        ships=ships,
-    )
+
+    if quest:
+        user.quests.remove(quest)
+        service.save(user)
+        return jsonify(success=True)
+
+    return jsonify(success=False, error="Quest not found")
 
 
-@quest_pages.route("/create", methods=[POST, GET])
+@quest_pages.route("/create", methods=[POST])
 def create_quest():
     uid = verify_is_logged_in()
     if uid:
@@ -84,36 +77,43 @@ def create_quest():
     return redirect("/login")
 
 
-@quest_pages.route("/edit/<int:quest_id>/", methods=[POST, GET])
+@quest_pages.route("/edit/<int:quest_id>/", methods=[POST])
 def edit_quest(quest_id: str):
     user = verify_is_logged_in()
     if not user:
         return redirect("/login")
     else:
-        user = service.get_by_id(quest_id)
+        user = service.get_by_id(user)
         quest = list(filter(lambda q: q.id == quest_id, user.quests))[0]
+        form = request.form
+        quest.name = form["name"]
+        quest.resources.clear()
 
+        for res in json.loads(request.form["resources"]):
+            quest.resources.append(Resource(res["name"], int(res["amount"])))
+
+        service.save(user)
+        resp = quest.json
         if not quest:
-            return redirect("/quests/create")
+            return jsonify(success=False, code=500, error="Quest not found")
         else:
-            return render_template(
-                "index.html",
-                page_content="components/edit_quest.html",
-                user=user,
-                quest=quest,
-            )
+            return jsonify(success=True, code=200, quest=resp)
 
 
-@quest_pages.route("/<int:id>/compute", methods=[GET])
-def compute_quest(id):
+@quest_pages.route("/compute/<int:quest_id>", methods=[POST])
+def compute_quest(quest_id):
     user = verify_is_logged_in()
     if not user:
         return redirect("/login")
     user = service.get_by_id(user)
-
-    return render_template(
-        "index.html",
-        page_content="components/compute_quest.html",
-        quest=list(filter(lambda q: q.id == id, user.quests))[0],
-        ships=user.ships,
-    )
+    data = request.get_json()
+    quest = list(filter(lambda q: q.id == quest_id, user.quests))[0]
+    algo = None
+    match data["algo"].lower():
+        case "time":
+            algo = TimeAlgorithm(user.ships, quest)
+        case "capacity":
+            algo = CapacityAlgorithm(user.ships, quest)
+        case _:
+            return jsonify(success=False, code=500, error="Unknown algorithm")
+    return jsonify(success=True, code=200, result=algo.calculate.json)

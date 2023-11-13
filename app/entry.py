@@ -2,6 +2,8 @@ from datetime import timedelta
 
 from flask import Flask, render_template, redirect, session, request
 
+from app.dal.service import UserService
+from app.routes.validation.login_validation import verify_is_logged_in
 from routes.user import user_pages
 from routes.quests import quest_pages
 from routes.ships import ship_pages
@@ -36,24 +38,23 @@ app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(hours=1)
 # @app.before_request
 # def setup():
 #     session.permanent = True
-#
-#
+
 # @app.route("/")
 # def login_redirect():
 #     if check_login(session, False):
 #         user_id = request.cookies.get("Seaport-User-Verified")
 #         return redirect("/user/%s" % user_id)
 #     return redirect("/login")
-#
-#
-# def check_login(session, requires_elevated):
-#     if "username" not in session:
-#         return False
-#     elif session["username"] == "admin":
-#         return True
-#     elif session["username"] == "regular" and not requires_elevated:
-#         return True
-#     return False
+
+
+@app.route("/main")
+def main():
+    user_id = verify_is_logged_in()
+    if user_id:
+        service = UserService()
+        user = service.get_by_id(user_id)
+        return render_template("main.html", user=user)
+    return redirect("/login")
 
 
 @app.errorhandler(404 | 500)

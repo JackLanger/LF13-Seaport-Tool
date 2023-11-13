@@ -6,150 +6,136 @@
     </div>
 {%- endmacro %}
 
-{% macro input(name, value='', type='text', size=20) -%}
-    <input type="{{ type }}" name="{{ name }}" value="{{ value|e }}" size="{{ size }}">
-{%- endmacro %}
-
-
 {# a single icon used in the ship cards #}
-{% macro icon(icon,value,alt='') -%}
-    <div class="col-4 mb-3"> <!-- Center align the contents -->
-
-        <div class="col">
-            <p class="card-text font-weight-bold h4 text-secondary">{{ value }}</p>
-        </div>
-
-        <div class="col icon-wrapper">
-            <img class="ship-icon h-100"
-                 src="{{ url_for('static', filename='resources/'+icon ) }}"
-                 alt="{{ alt }}"/>
-        </div>
-    </div>
-{%- endmacro %}
-
-{# a ship card containing functionality for upgrading , deleting and editing #}
-
-{% macro ship_card(ship,user) -%}
-
-    <div class="col-md-4 mb-4">
-        <div class="card">
-            <div class="card-body text-center"> <!-- Center align all contents -->
-
-
-                <div class="row col-12 align-items-center">
-                    {% if ship.level == 1 %}
-                        <img src="{{ url_for('static', filename='resources/level-1-ship.png') }}"
-                             class="card-img-top align-self-center w-25" alt="Ship Image">
-                    {% elif ship.level == 5 %}
-                        <img src="{{ url_for('static', filename='resources/level-5-ship.svg') }}"
-                             class="card-img-top align-self-center w-25" alt="Ship Image">
-                    {% else %}
-                        <img src="{{ url_for('static', filename='resources/level-3-ship.png') }}"
-                             class="card-img-top w-25" alt="Ship Image">
-                    {% endif %}
-                </div>
-
-                <div class="row align-items-center">
-                    <div class="col-12">
-                        <h5 class="card-title">{{ ship.name }}</h5>
-                    </div>
-                </div>
-
-                <div class="container">
-                    <div class="row">
-                        {{ icon('crate.svg', ship.capacity,'capacity') }}
-                        {{ icon('sailor-pirate.svg', ship.sailors,'sailors') }}
-                        {{ icon('stars-level.svg', ship.level,'level') }}
-                    </div>
-                </div>
-
-                <div class="row align-items-center m-1">
-                    <div class="col-12 mt-3">
-
-                        <a href="/ships/edit/{{ ship.id }}"
-                           class="btn btn-primary rounded-circle p-2 m-1">
-                            <img
-                                src="{{ url_for('static',filename="resources/pen.svg") }}"
-                                class="btn-icon"
-                                alt="edit">
-                        </a>
-
-                        <a href="/ships/delete/{{ ship.id }}"
-                           class="btn btn-danger rounded-circle p-2 m-1">
-                            <img
-                                src="{{ url_for('static',filename="resources/can.svg") }}"
-                                class="btn-icon"
-                                alt="delete">
-                        </a>
-
-                        <a href="/ships/level-up/{{ ship.id }}"
-                           class="btn btn-warning rounded-circle p-2 m-1">
-                            <img
-                                src="{{ url_for('static',filename="resources/upgrade.svg") }}"
-                                class="btn-icon"
-                                alt="level-up">
-                        </a>
-
-                    </div>
-                </div>
+{% macro icon(ship,value,img,attribute) -%}
+    <div class="container">
+        <div class="row">
+            <label for="ship-{{ ship.id }}-{{ attribute }}" class="col-sm-5">{{ attribute }}:</label>
+            <input id = "ship-{{ ship.id }}-{{ attribute }}" name="{{ attribute }}" class="col-sm-5 transparent w-25 white" type="text" value="{{ value }}">
+            <div class="col inline-icon" >
+                <img src="{{ url_for('static', filename='resources/' + img) }}" alt="">
             </div>
         </div>
     </div>
-
 {%- endmacro %}
 
 
-{% macro round_icon(icon,alt) -%}
-    <img class="btn-icon"
-         src="{{ url_for('static', filename='resources/'+icon ) }}"
-         alt="{{ alt }}"/>
-{%- endmacro %}
+{% macro create_ship_card() -%}
+    <form id="create_ship_form" class="card ship-card m-3">
+        <div class="color-white m-3">
+            <span onclick="close_form()" class="close-button">x</span>
+            <div class="row col-12 align-items-center">
 
+                <div class="col-12">
+                    <input type="text" class="card-title form-control font-weight-bold h2" id="ship-title" name="name"
+                           placeholder="Ship Name">
+                </div>
 
-{% macro ship_table(ships) -%}
-	<table class="table table-striped">
-		<thead>
-		<tr>
-			<th>Name</th>
-			<th>capacity</th>
-			<th>Level</th>
-		</tr>
-		</thead>
-		<tbody>
-		{% for ship in ships %}
-			<tr>
-				<td>{{ ship.name }}</td>
-				<td>{{ ship.capacity }} <img class="small-icon" src="{{ url_for('static',filename='resources/crate.svg') }}" alt="crate"></td>
-				<td>
-					{% for sh in range(ship.level) %}
-						<img
-								class="small-icon"
-								alt="star"
-								src="{{ url_for('static', filename='resources/star.svg') }}"
-						></img>
-					{% endfor %}
-				</td>
-			</tr>
-		{% endfor %}
-		</tbody>
-	</table>
-{%- endmacro %}
+                <div class="ship-card-image background-light">
 
-{% macro resource_table(quest) -%}
-	<table class="table table-striped">
-		<thead>
-		<tr>
-			<th>Name</th>
-			<th>Amount</th>
-		</tr>
-		</thead>
-		<tbody>
-		{% for resource in quest.resource %}
-			<tr>
-				<td>{{ resource.name }}</td>
-				<td>{{ resource.amount }}</td>
-			</tr>
-		{% endfor %}
-		</tbody>
-	</table>
+                </div>
+
+                    <div class="container">
+                        <div class="row">
+                            <label for="capacity" class="col-sm-5">Capacity:</label>
+                            <input type="number" name="capacity" type="text" class="col-sm-5 transparent w-25 white"
+                                   style="max-width:60px;text-align:center;outline:none;" value="0">
+                            <div class="col inline-icon" >
+                                <img src="{{ url_for('static', filename='resources/cargo.svg') }}" alt="capacity">
+                            </div>
+                        </div>
+                    </div>
+
+                <div class="container">
+                    <div class="row">
+                        <label for="sailors" class="col-sm-5">Sailors:</label>
+                        <input type="number" name="sailors" type="text" class="col-sm-5 transparent w-25 white"
+                               style="max-width:60px;text-align:center;outline:none;" value="0">
+                        <div class="col inline-icon" >
+                            <img src="{{ url_for('static', filename='resources/sailor.svg') }}" alt="sailors">
+                        </div>
+                    </div>
+                </div>
+                <div class="container">
+                    <div class="row">
+                        <label for="level" class="col-sm-5">Level:</label>
+                        <input type="number" name="level" class="col-sm-5 transparent w-25 white"
+                               style="max-width:60px;text-align:center;outline:none;" value="0">
+                        <div class="col inline-icon" >
+                            <img class="icon-thumb"
+                                 src="{{ url_for('static', filename='resources/stars-level.svg' ) }}"
+                                 alt="level"/>
+                        </div>
+                    </div>
+                </div>
+                </div>
+        </div>
+
+        {% include 'svg.jinja' %}
+        <div id="edit-btns">
+            <button
+                    id="submit-btn"
+                    type="submit"
+                    class="btn">
+                {{ floppy() }}
+            </button>
+
+            <button
+                    id="delete-btn"
+                    type="submit"
+                    class="btn">
+                {{ can() }}
+            </button>
+        </div>
+    </form>
+    <script type="text/javascript">
+
+        const form = $('#create_ship_form');
+        form.hide();
+        $('#delete-btn').click(e => {
+            e.preventDefault();
+            Array.from(form.children().find('input')).forEach(i => {
+                if (i.name === 'name') {
+                    i.value = ''
+                } else {
+                    i.value = 0
+                }
+            })
+        })
+
+        const submit = $('#submit-btn');
+        submit.click(e => {
+            e.preventDefault();
+            const formData = new FormData(document.getElementById('create_ship_form'));
+            // Send the POST request
+            $.ajax('/ships/create',
+                {
+                    method: 'POST',
+                    dataType: 'json',
+                    contentType: false,
+                    processData: false,
+                    data: formData,
+                    success: function (data) {
+                        console.log(data)
+                        form.hide();
+                        Array.from(form.children().find('input')).forEach(i => {
+                            i.value = ''
+                        })
+
+                        const list = $('#ship-list')
+                        list.load(document.URL + ' #ship-list')
+                        $('#collapse-create-ship').show()
+                    },
+                    error: function (jqXhr, textStatus, errorThrown) {
+                        console.log(errorThrown);
+                    }
+                }
+            );
+        })
+
+        function close_form() {
+            $('#collapse-create-ship').show()
+            form.hide()
+        }
+    </script>
 {%- endmacro %}
