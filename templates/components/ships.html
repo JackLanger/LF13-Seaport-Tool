@@ -1,7 +1,19 @@
 <article>
     {% from 'macros.jinja' import ship_card,icon with context %}
     {% from 'svg.jinja' import can,floppy with context %}
+    <p class="h1">Ships</p>
     <div id="ship-list" class="color-white p-5 m-5 container row">
+
+        <div class="form-check form-switch">
+                <input
+                        type="checkbox"
+                        id="select-all-ships"
+                        class="form-check-input"
+                        onclick="toggleAllShips()"
+                />
+                <label for="select-all-ships" class="form-check-label">Select All</label>
+            </div>
+
         {% for ship in user.ships %}
             <div id="ship-{{ ship.id }}-form" style="cursor: pointer" class="card ship-card pointer color-white m-3" >
                 <div class="card-body text-center">
@@ -137,7 +149,6 @@
         <div class="ship-card m-3 p-0">
             <p id="collapse-create-ship" onclick="extend_or_expand('create_ship_form',this)">+</p>
         </div>
-
     </div>
 
     <script type="text/javascript">
@@ -152,5 +163,27 @@
                 form.hide();
             }
         }
-    </script>
+
+    function toggleAllShips() {
+        const allCheckboxes = $("[id^='ship-'][id$='-selected']");
+        const areAllSelected = allCheckboxes.length > 0 && allCheckboxes.length === allCheckboxes.filter(':checked').length;
+
+        allCheckboxes.prop('checked', !areAllSelected);
+        updateSelectAllButtonState();
+    }
+
+    function updateSelectAllButtonState() {
+        const allCheckboxes = $("[id^='ship-'][id$='-selected']");
+        const selectAllButton = $('#select-all-ships');
+
+        if (allCheckboxes.length > 0 && allCheckboxes.length === allCheckboxes.filter(':checked').length) {
+            selectAllButton.prop('checked', true);
+        } else {
+            selectAllButton.prop('checked', false);
+        }
+    }
+
+    $("[id^='ship-'][id$='-selected']").change(updateSelectAllButtonState);
+</script>
+
 </article>
