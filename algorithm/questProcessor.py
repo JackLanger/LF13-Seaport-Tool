@@ -3,17 +3,31 @@ from typing import List, Dict, Tuple
 
 from flask import json
 
-from app.models.quest import QuestDTO
+from app.models.quest import QuestDTO, Resource
 from app.models.ship import ShipDTO
 
 
 class AlgoResult:
     round_count: int
-    rounds: List[List[Tuple[ShipDTO, str]]]
+    rounds: List[Dict[Resource, List[ShipDTO]]]
 
-    def __init__(self, n=0, rounds=None):
-        self.round_count = n
-        self.rounds = rounds if rounds is not None else []
+    def __init__(self, data: List[Tuple[ShipDTO, Resource]] = None):
+        self.rounds = []
+        for ship, resource in data:
+            if len(self.rounds) == 0:
+                self.rounds.append({resource.name: [ship]})
+                continue
+
+            ship_added = False
+            for i in range(len(self.rounds)):
+                if resource.name not in self.rounds[i]:
+                    self.rounds[i][resource.name] = [ship]
+                    ship_added = True
+                elif ship not in self.rounds[i][resource.name]:
+                    self.rounds[i][resource.name].append(ship)
+
+            if not ship_added:
+                self.rounds.append({resource.name: [ship]})
 
     def add_round(self, round_data):
         self.rounds.append(round_data)
@@ -23,8 +37,11 @@ class AlgoResult:
         for i, round_data in enumerate(self.rounds):
             print(f"Round {i + 1}:")
             for ship, resource in round_data:
-                print(f"  Ship Name: {ship.name}, Capacity: {ship.capacity}, Resource: {resource}")
+                print(
+                    f"  Ship Name: {ship.name}, Capacity: {ship.capacity}, Resource: {resource}"
+                )
             print("\n")
+
 
 class Algorithm:
     def __init__(self, ships: List[ShipDTO], quest: QuestDTO):
@@ -40,5 +57,5 @@ class QuestProcessor:
     def __init__(self, algorithm: Algorithm):
         self.__algorithm = algorithm
 
-    def process_quest(self) -> AlgoResult:
+    def process_quest(self) -> [AlgoResult]:
         return self.__algorithm.calculate
