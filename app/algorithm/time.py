@@ -1,6 +1,6 @@
 from uuid import uuid4
 from typing import List
-import time
+import time,itertools
 
 class Resource:
     def __init__(self, name: str, amount: int = 0):
@@ -34,12 +34,11 @@ class Package:
         self.content = package.amount*[LocalResource(package.name)]
         self.name = package.name
 
-class Cap:
+class TimeCrit:
     def __init__(self,ships,quest):
         self.ships = ships
         self.quest = []
-        self.miniround = []
-        self.biground = []
+        self.round = []
         
         for q in quest.resource:
             self.quest.append(Package(q))
@@ -58,6 +57,12 @@ class Cap:
             return True
         else:
             return False
+        
+    def forJack(self,input):
+        output = [[] for x in range(len(input)//len(self.ships)+1)]
+        for i in range(len(input)):
+            output[i//len(self.ships)].append(input[i])
+        return output
     
     def calculate(self,n = 0):
         if n < len(self.ships):
@@ -67,26 +72,26 @@ class Cap:
                 ship = self.ships[n]
                 while len(ship.storage) < ship.capacity and len(package.content) > 0 and self.checkResource(ship,package):
                     ship.storage.append(package.content.pop())
+                    
                     if len(ship.storage) == ship.capacity:
-                        self.miniround.append((ship.name,package.name,len(ship.storage)))
+                        self.round.append((ship.name,package.name))
                         self.calculate(n+1)
                          
                     if not package.content and self.quest:
                         self.quest.pop(0)
-                        self.miniround.append((ship.name,package.name,len(ship.storage),ship.capacity - len(ship.storage)))
+                        self.round.append((ship.name,package.name))
                         self.calculate(n+1)
                         
-                print(self.miniround)
-                print(self.checkAllResources())
-                
-                self.biground.append(self.miniround)
-                self.miniround.clear()
                 n = 0
                 for ship in self.ships:
                     ship.storage.clear()
-                # time.sleep(1)
+                    
+        return self.forJack(self.round)
         
-res = Cap(ships,quest)
-res.calculate()
+res = TimeCrit(ships,quest)
+x = res.calculate()
+print(x)
+
+
 
     
