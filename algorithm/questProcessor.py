@@ -29,6 +29,9 @@ class AlgoResult:
             if not ship_added:
                 self.rounds.append({resource.name: [ship]})
 
+    def get_round_count(self) -> int:
+        return len(self.rounds)
+
     def add_round(self, round_data):
         self.rounds.append(round_data)
 
