@@ -1,6 +1,8 @@
-from typing import List, Dict
+import copy
+import math
+from typing import List, Dict, Tuple
 
-from app.models.quest import QuestDTO
+from app.models.quest import QuestDTO, Resource
 from app.models.ship import ShipDTO
 from algorithm.questProcessor import Algorithm, AlgoResult
 
@@ -8,42 +10,45 @@ from algorithm.questProcessor import Algorithm, AlgoResult
 class TimeAlgorithm(Algorithm):
     def __init__(self, ships: List[ShipDTO], quest: QuestDTO):
         super().__init__(ships, quest)
+        self.__results = []
+        self.__bestResult = math.inf
+        self.total_resources_needed = 0
+        for r in quest.resources:
+            self.total_resources_needed += r.amount
 
-    @property
-    def calculate(self) -> AlgoResult:
-        total_amount = 0
-        total_capacity = 0
+    def calculate(self) -> [AlgoResult]:
+        self.compute_ships(0, self.quest.resources, [])
 
-        for r in self.quest.resources:
-            total_amount += r.amount
+        return self.__results
 
-        for s in self.ships:
-            total_capacity += s.capacity
+    def compute_ships(
+        self,
+        resources_shipped: int,
+        resources: List[Resource],
+        used_ships: List[Tuple[ShipDTO, Resource]],
+    ):
+        if resources_shipped >= self.total_resources_needed:
+            result = AlgoResult(used_ships)
+            round_count = result.round_count
+            if round_count < self.__bestResult:
+                self.__results.clear()
+                self.__bestResult = round_count
+                self.__results.append(result)
 
-        result = []
-        used_ships = []
-        current = {}
-        ships_by_capacity = sorted(self.ships, key=lambda x: x.capacity, reverse=True)
+            elif round_count == self.__bestResult:
+                self.__results.append(result)
 
-        while total_amount > 0:
-            for r in self.quest.resources:
-                if r.amount > 0 and total_capacity <= r.amount:
-                    result.append({r.name: self.ships})
-                    total_amount -= r.amount
-                    r.amount -= total_capacity
+            return
 
-                else:
-                    current[r.name] = []
-
-                    for s in ships_by_capacity:
-                        if s not in used_ships:
-                            used_ships.append(s)
-                            r.amount -= s.capacity
-                            current[r.name].append(s)
-
-                        if r.amount <= 0:
-                            break
-
-        result.append(current)
-        result = AlgoResult(len(result), result)
-        return result
+        for ship in self.ships:
+            for i in range(len(resources)):
+                if resources[i].amount > 0:
+                    # create a copy of the resources resource for each ship and each resource
+                    # in order to compute all the variations
+                    res_cpy = copy.deepcopy(resources)
+                    res_cpy[i].amount -= ship.capacity
+                    self.compute_ships(
+                        resources_shipped + ship.capacity,
+                        res_cpy,
+                        used_ships + [(ship, res_cpy[i])],
+                    )
