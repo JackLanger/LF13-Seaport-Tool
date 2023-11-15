@@ -54,9 +54,9 @@ class CapCrit:
     def shipPermutation(self):
         return list(itertools.permutations(self.perShips))
         
-    def checkAllResources(self):
+    def checkAllResources(self,quest):
         amount = 0
-        for package in self.perQuest:
+        for package in quest:
             amount += len(package.content)
         return amount
     
@@ -69,60 +69,46 @@ class CapCrit:
     def forJack(self,input):
         output = [[] for x in range(len(input)//len(self.perShips)+1)]
         for i in range(len(input)):
-            output[i//len(self.ships)].append(input[i])
+            output[i//len(self.perShips)].append(input[i])
         return output
         
-    # def permutate(self):
-    #     x = self.questPermutation()
-    #     y = self.shipPermutation()
-    #     print(len(x[0]))
-    #     print(len(y[0]))
     
     def permutate(self):
-        n=0
-        m=0
         for quests in self.questPermutation():
             for ships in self.shipPermutation():
                 self.biground.append(self.calculate(ships,quests))
         return self.biground
                 
 
-    def calculate(self,ships,quest,n = 0,m = 0):
+    def calculate(self,ships,quest,n = 0):
         localShips = list(ships)
         localQuest = list(quest)
-        for i in localQuest:
-            print(i.name)
+
+        
         if n < len(localShips):
-            while self.checkAllResources() > 0:
+            while self.checkAllResources(localQuest) > 0:
+                package = localQuest[0]
                 ship = localShips[n]
-                package = localQuest[m]
-                print(ship.name,package.name,len(package.content))
-                time.sleep(1)
                 while len(ship.storage) < ship.capacity and len(package.content) > 0 and self.checkResource(ship,package):
                     ship.storage.append(package.content.pop())
                     
-                    if len(ship.storage) == ship.capacity:
-                        self.round.append((ship.name,package.name))
-                        self.calculate(localShips,localQuest,n+1)
-                         
                     if not package.content and localQuest:
-                        # localQuest.pop(0)
-                        self.round.append((ship.name,package.name))
-                        self.calculate(localShips,localQuest,n+1,m+1)
-                        
-                n = 0
-                m = 0
-                for ship in self.ships:
-                    ship.storage.clear()
+                        localQuest.pop(0)
+                        self.round.append((ship.name,len(ship.storage),package.name))
+                        self.calculate(localShips,localQuest,n+1)                    
                     
-        x = self.forJack(self.round)
-        print(x)
-        time.sleep(1)
-        return x
+                    if len(ship.storage) == ship.capacity:
+                        self.round.append((ship.name,len(ship.storage),package.name))
+                        self.calculate(localShips,localQuest,n+1)
+                                        
+                n = 0
+                for ship in localShips:
+                    ship.storage.clear()
+        return self.forJack(self.round)
     
     
 res = CapCrit(ships,quest)
 glu = res.permutate()
-# print(glu)
+
 
     
