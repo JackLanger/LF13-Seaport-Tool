@@ -18,12 +18,15 @@ class AlgoResult:
         self.rounds.append(round_data)
 
     def print_result(self):
-        print(f"Round Count: {self.round_count}")
-        for i, round_data in enumerate(self.rounds):
-            print(f"Round {i + 1}:")
-            for ship, resource in round_data:
-                print(f"  Ship Name: {ship.name}, Capacity: {ship.capacity}, Resource: {resource}")
-            print("\n")
+        for n, round in enumerate(self.rounds):
+            print(f"Solution {n + 1}:")
+            for i, round_data in enumerate(round):
+                print(f"Round {i + 1}:")
+                for ship, resource in round_data:
+                    print(
+                        f"  Ship Name: {ship.name}, Capacity: {ship.capacity}, Resource: {resource}"
+                    )
+                print("\n")
 
 
 class Algorithm:
