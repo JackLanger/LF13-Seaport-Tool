@@ -48,5 +48,5 @@ class Algorithm:
         self.ships = ships
         self.quest = quest
 
-    def calculate(self) -> AlgoResult:
+    def calculate(self) -> [AlgoResult]:
         raise NotImplementedError()
