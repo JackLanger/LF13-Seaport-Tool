@@ -31,17 +31,16 @@ class AlgoResult:
                     self.rounds.append({resource.name: [ship]})
 
     def to_json(self):
-        json_str = "["
-        for r in self.rounds:
-            for k in r:
-                json_str += f'{{"{k}":['
-                for ship in r[k]:
-                    json_str += f'{{"ship_id":{ship.id},"name":"{ship.name}", "capacity":{ship.capacity}, "sailors":{ship.sailors}, "level":{ship.level}}}'
-                    if ship != r[k][-1]:
-                        json_str += ","
-                json_str += "]},"
-        json_str += "]"
-        return json_str
+        arr = []
+        for runde in self.rounds:
+            round_dict = {}
+            for key in runde.keys():
+                round_dict[key] = []
+                for ship in runde[key]:
+                    round_dict[key].append(ship.json)
+            arr.append(json.dumps(round_dict))
+
+        return json.dumps(arr)
 
     def get_round_count(self) -> int:
         return len(self.rounds)
