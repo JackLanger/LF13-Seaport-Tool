@@ -1,5 +1,7 @@
+import copy
+import math
+from typing import List, Dict, Tuple
 
-from typing import List
 from app.models.quest import QuestDTO, Resource
 from app.models.ship import ShipDTO
 from algorithm.questProcessor import Algorithm, AlgoResult
@@ -8,59 +10,50 @@ from algorithm.questProcessor import Algorithm, AlgoResult
 class TimeAlgorithm(Algorithm):
     def __init__(self, ships: List[ShipDTO], quest: QuestDTO):
         super().__init__(ships, quest)
+        self.__results = []
+        self.__bestResult = math.inf
+        self.total_resources_needed = 0
+        for r in quest.resources:
+            self.total_resources_needed += r.amount
 
-    def calculate(self) -> AlgoResult:
-        result = []
+    def calculate(self) -> [AlgoResult]:
+        if len(self.ships) > 0:
+            self.compute_ships(0, self.quest.resources, [])
+        # auf Permutationen prüfen
+        return self.__results
 
-        while any(resource.amount > 0 for resource in self.quest.resources):
-            new_round = self.create_new_round()
-            if new_round:
-                result.append(new_round)
+    def compute_ships(
+        self,
+        resources_shipped: int,
+        resources: List[Resource],
+        used_ships: List[Tuple[ShipDTO, Resource]],
+    ):
+        result = AlgoResult(used_ships)
+        if result.get_round_count() > self.__bestResult:
+            return
 
-        result = AlgoResult(len(result), result)
-        return result
+        if resources_shipped >= self.total_resources_needed:
+            round_count = result.get_round_count()
+            if round_count < self.__bestResult:
+                self.__results.clear()
+                self.__bestResult = round_count
+                self.__results.append(result)
 
-    def create_new_round(self):
-        new_round = []
-        used_ships = set()
+            elif round_count == self.__bestResult:
+                self.__results.append(result)
 
-        while any(resource.amount > 0 for resource in self.quest.resources):
-            round_resources = []
+            return
 
-            for resource in self.quest.resources:
-                if resource.amount > 0:
-                    differences = [
-                        (ship, abs(ship.capacity - resource.amount))
-                        for ship in self.ships
-                        if ship not in used_ships
-                    ]
-                    differences.sort(key=lambda x: x[1])
-
-                    if differences:
-                        selected_ship, _ = differences[0]
-                        used_ships.add(selected_ship)
-                        resource.amount -= selected_ship.capacity
-                        round_resources.append((selected_ship, resource.name))
-
-            if not round_resources:
-                break
-
-            new_round.extend(round_resources)
-
-        return new_round
-
-
-# if __name__ == "__main__":
-#     ship1 = ShipDTO(ship_id=1, name="Ship1", capacity=20, sailors=10)
-#     ship2 = ShipDTO(ship_id=2, name="Ship2", capacity=15, sailors=10)
-#     ship3 = ShipDTO(ship_id=3, name="Ship3", capacity=25, sailors=10)
-#
-#     ships = [ship1, ship2, ship3]
-#
-#     resources = [Resource(name="Wood", amount=30), Resource(name="Fish", amount=50)]
-#
-#     quest = QuestDTO(id=1, title="Sample Quest", resources=resources)
-#     time_algo = TimeAlgorithm(ships, quest)
-#     result = time_algo.calculate()
-#
-#     result.print_result()
+        for ship in self.ships:
+            for i in range(len(resources)):
+                if resources[i].amount > 0:
+                    # create a copy of the resources resource for each ship and each resource
+                    # in order to compute all the variations
+                    res_cpy = copy.deepcopy(resources)
+                    res_cpy[i].amount -= ship.capacity
+                    ship_list = used_ships + [(ship, res_cpy[i])]
+                    self.compute_ships(
+                        resources_shipped + ship.capacity,
+                        res_cpy,
+                        ship_list,
+                    )

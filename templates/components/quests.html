@@ -73,14 +73,13 @@
                                                             name="r_amount"
                                                             value="{{ r.amount }}">
                                                     </td>
-                                                    <td id="remove_resource_btn_{{ quest.id }}{{ loop.index }}-wrapper">
+                                                    <td >
                                                     <button
                                                         class="m-2 remove_resource_btn"
                                                         id="remove_resource_btn_{{ quest.id }}{{ loop.index }}"
-                                                        onclick="$('#resource_fields-{{ quest.id }}{{ loop.index }}').remove()" >X</button>
-                                                        <script>
-                                                            $('#remove_resource_btn_{{ quest.id }}{{ loop.index }}').hide()
-                                                        </script>
+                                                        hidden
+                                                        onclick="this.parentNode.parentNode.remove()" >X</button>
+
                                                     </td>
 
                                                 </tr>
@@ -98,7 +97,7 @@
                                                             const index = resources.children().length
                                                             const html =`
                                                             <tr id="resource_fields-{{ quest.id }}${index}">
-                                                                <td>${index}</td>
+                                                                <td>${index+1}</td>
                                                                 <td>
                                                                     <input
                                                                         type="text"
@@ -114,11 +113,11 @@
                                                                         name="r_amount"
                                                                         value="0">
                                                                 </td>
-                                                                <td id="remove_resource_btn_{{ quest.id }}${ index +1}-wrapper">
+                                                                <td>
                                                                 <button
                                                                     class="m-2 remove_resource_btn"
                                                                     id="remove_resource_btn_{{ quest.id }}${index+1}"
-                                                                    onclick="$('#resource_fields-{{ quest.id }}${index}').remove()"
+                                                                    onclick="this.parentNode.parentNode.remove()"
                                                                     >X</button>
                                                                 </td>
                                                             </tr>`
@@ -162,6 +161,20 @@
                                                         title="Compute with focus on capacity or time.">
                                                 <label id="capacity-{{ quest.id }}_label" for="capacity-{{ quest.id }}"
                                                        class="form-check-label white">Time</label>
+                                                <div class="table-responsive">
+                                                <table class="table" id="result-table-{{ quest.id }}">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col">Round no</th>
+                                                        <th scope="col">Resources/Ships</th>
+{#                                                        <th>Resources</th>#}
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody hidden >
+
+                                                    </tbody>
+                                                </table>
+</div>
                                             </div>
 
                                             <button class="btn btn-light" onclick="compute_quest({{ quest.id }})">Calculate</button>
@@ -256,9 +269,10 @@
                     if (e.target.checked) {
                         label.text('Edit Mode')
                         enable_jquery(title)
+                        Array.from(quest_info.children().find('button')).forEach(b => b.removeAttribute('hidden'))
                         let index = 0;
                         Array.from(quest_info.children().find('input')).forEach(c => {
-                            $('#remove_resource_btn_{{ quest.id }}'+index++).show()
+                            {#$('#remove_resource_btn_{{ quest.id }}'+index++).show()#}
                             enable_js(c)
                         })
                         $('#add_resource_btn_{{ quest.id }}').show()
@@ -266,9 +280,11 @@
                     } else {
                         label.text('Edit')
                         disable_jquery(title)
+
+                        Array.from(quest_info.children().find('button')).forEach(b => b.setAttribute('hidden',true))
                         let index = 0;
                         Array.from(quest_info.children().find('input')).forEach(c => {
-                            $('#remove_resource_btn_{{ quest.id }}'+index++).hide()
+                            {#$('#remove_resource_btn_{{ quest.id }}'+index++).hide()#}
                             disable_js(c)
                         })
                         $('#add_resource_btn_{{ quest.id }}').hide()
@@ -343,14 +359,17 @@
     }
 
     function compute_quest(quest_id){
+            let algo_type = $(`#capacity-${ quest_id }_label`).html()
         $.ajax(`/quests/compute/${quest_id}`,{
             method: 'POST',
             dataType:'json',
-            data: JSON.stringify({algo: $(`#capacity-${quest_id}`).val() ? 'time' : 'capacity'}),
+            data: JSON.stringify({algo: algo_type}),
             contentType: 'application/json',
             processData: false,
             success: function (data) {
-                create_result_table(quest_id,data)
+                console.log('success',data)
+                console.log('result json',JSON.parse(data.result))
+                create_result_table(quest_id,JSON.parse(data.result))
             },
             error: function (error) {
                 console.log('failed',error)
@@ -360,7 +379,53 @@
     }
 
         function create_result_table(quest_id,data){
+            const t_body = $(`#result-table-${quest_id}> tbody:last-child`);
+            t_body.empty();
+            t_body.removeAttr('hidden');
+            let row_number = 1;
+            for (let r in data) {
+                const dict = JSON.parse(data[r])
+                let str = ""
+                for (let key in dict) {
+                    str += key + ":" + "["
+                    let ships  = JSON.parse(dict[key])
+                    let ship_array = []
+                    console.log(ships)
 
+                        str += ship_array.join(", ") + "]"
+
+                    t_body.append(`<tr>
+                                <td>${row_number++}</td>
+                                <td>${str}</td>
+                            </tr>`)
+                }
+            }
+        }
+
+        function create_html_element({type, children, classes,  id, innerHtml,attributes:[{attr_name ,value}], events:[{evt_name, func}]}){
+            const element = document.createElement(type);
+            if (classes) {
+                element.className = classes;
+            }
+            if (id) {
+                element.id = id;
+            }
+            if (innerHtml) {
+                element.innerHTML = innerHtml;
+            }
+            if (attr_name) {
+                element.setAttribute(attr_name, value);
+            }
+            if (evt_name) {
+                element.addEventListener(evt_name, func);
+            }
+
+            if(children){
+                children.forEach(child => {
+                    element.appendChild(create_html_element(child.type, child))
+                })
+            }
+            return element;
         }
     </script>
 </article>

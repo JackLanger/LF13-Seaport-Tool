@@ -1,5 +1,6 @@
 import json
 
+import pykson
 from flask import Blueprint, render_template, redirect, request, jsonify
 
 from algorithm.capacityAlgorithm import CapacityAlgorithm
@@ -55,25 +56,22 @@ def create_quest():
     uid = verify_is_logged_in()
     if uid:
         user = service.get_by_id(uid)
-        if request.method == "POST":
-            from app.models.quest import QuestDTO, Resource
 
-            resource_json = request.form["resources"]
-            resource_data = json.loads(resource_json)
-            resources = []
-            for res in resource_data:
-                amount = int(res["amount"])
-                name = res["name"]
-                resources.append(Resource(name, amount=amount))
-            quest = QuestDTO(request.form["name"], resources=resources)
-            user.quests.append(quest)
-            service.save(user)
-            return redirect("/quests")
+        from app.models.quest import QuestDTO, Resource
 
-        else:
-            return render_template(
-                "index.html", page_content="components/create_quest.html", user=user
-            )
+        resource_json = request.form["resources"]
+        resource_data = json.loads(resource_json)
+        resources = []
+        for res in resource_data:
+            amount = int(res["amount"])
+            name = res["name"]
+            resources.append(Resource(name, amount=amount))
+
+        quest = QuestDTO(len(user.quests), request.form["name"], resources=resources)
+        user.quests.append(quest)
+        service.save(user)
+        return jsonify(success=True, code=200, quest=quest.json)
+
     return redirect("/login")
 
 
@@ -116,4 +114,11 @@ def compute_quest(quest_id):
             algo = CapacityAlgorithm(user.ships, quest)
         case _:
             return jsonify(success=False, code=500, error="Unknown algorithm")
-    return jsonify(success=True, code=200, result=algo.calculate.json)
+    result = algo.calculate()
+    return render_template("quest_result.html", result)
+    # res = []
+    # for d in result:
+    #     res.append(d.to_json())
+    #
+    # json_resp = jsonify(success=True, code=200, result=res)
+    # return json_resp

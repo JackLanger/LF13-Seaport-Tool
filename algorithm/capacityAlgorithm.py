@@ -1,5 +1,7 @@
-from typing import List
-from app.models.quest import QuestDTO
+import copy
+import math
+from typing import List, Tuple
+from app.models.quest import QuestDTO, Resource
 
 from app.models.ship import ShipDTO
 from algorithm.questProcessor import Algorithm, AlgoResult
@@ -9,63 +11,55 @@ class CapacityAlgorithm(Algorithm):
     def __init__(self, ships: List[ShipDTO], quest: QuestDTO):
         super().__init__(ships, quest)
 
-    @staticmethod
-    def create_new_round(ships, quest, result):
-        new_round = []
-        used_ships = set()
+        self.__results = []
+        self.__bestResult = math.inf
+        self.total_resources_needed = 0
+        for r in quest.resources:
+            self.total_resources_needed += r.amount
 
-        round_resources = []
+    def calculate(self) -> [AlgoResult]:
+        self.compute_ships(0, self.quest.resources, [])
 
-        for resource in quest.resources:
-            if resource.amount > 0:
-                differences = [
-                    (ship, abs(ship.capacity - resource.amount))
-                    for ship in ships
-                    if ship not in used_ships
-                ]
-                differences.sort(key=lambda x: x[1])
+        return self.__results
 
-                selected_ship, _ = (
-                    differences[0] if differences else (None, float("inf"))
-                )
+    def compute_ships(
+        self,
+        resources_shipped: int,
+        resources: List[Resource],
+        used_ships: List[Tuple[ShipDTO, Resource]],
+    ):
+        delta = resources_shipped - self.total_resources_needed
+        if delta > self.__bestResult:
+            return
 
-                if selected_ship:
-                    if selected_ship.capacity == resource.amount:
-                        used_ships.add(selected_ship)
-                        resource.amount = 0
-                        round_resources.append((selected_ship, resource.name))
-                    else:
-                        used_ships.add(selected_ship)
-                        resource.amount -= selected_ship.capacity
-                        round_resources.append((selected_ship, resource.name))
+        if resources_shipped >= self.total_resources_needed:
+            for r in resources:
+                if r.amount > 0:
+                    return
 
-        new_round.extend(round_resources)
+            if delta < self.__bestResult:
+                self.__results.clear()
+                self.__bestResult = delta
+                self.__results.append(AlgoResult(used_ships))
 
-        if new_round:
-            result.append(new_round)
+            elif delta == self.__bestResult:
+                self.__results.append(AlgoResult(used_ships))
 
-    def calculate(self) -> AlgoResult:
-        result = []
+            return
 
-        while any(resource.amount > 0 for resource in self.quest.resources):
-            self.create_new_round(self.ships, self.quest, result)
+        for ship in self.ships:
+            if self.__bestResult == 0 and len(self.__results) >= 1000:
+                return
 
-        result = AlgoResult(len(result), result)
-        return result
+            for i in range(len(resources)):
+                if resources[i].amount > 0:
+                    # create a copy of the resources resource for each ship and each resource
+                    # in order to compute all the variations
+                    res_cpy = copy.deepcopy(resources)
+                    res_cpy[i].amount -= ship.capacity
 
-
-# if __name__ == "__main__":
-#     ship1 = ShipDTO(ship_id=1, name="Ship1", capacity=20, sailors=10)
-#     ship2 = ShipDTO(ship_id=2, name="Ship2", capacity=15, sailors=10)
-#     ship3 = ShipDTO(ship_id=3, name="Ship3", capacity=25, sailors=10)
-#
-#     ships = [ship1, ship2, ship3]
-#
-#     resources = [Resource(name="Wood", amount=30), Resource(name="Fish", amount=50)]
-#
-#     quest = QuestDTO(id=1, title="Sample Quest", resources=resources)
-#     time_algo = CapacityAlgorithm(ships, quest)
-#     result = time_algo.calculate()
-#
-#     result.print_result()
-
+                    self.compute_ships(
+                        resources_shipped + ship.capacity,
+                        res_cpy,
+                        used_ships + [(ship, res_cpy[i])],
+                    )
