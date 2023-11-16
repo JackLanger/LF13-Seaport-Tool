@@ -102,17 +102,22 @@ def compute_quest(quest_id):
     user = verify_is_logged_in()
     if not user:
         return redirect("/login")
+
     user = service.get_by_id(user)
     data = request.get_json()
-    quest = list(filter(lambda q: q.id == quest_id, user.quests))[0]
+    quest = next(q for q in user.quests if q.id == quest_id)
     algo = None
     match data["algo"].lower():
         case "time":
+            print("Time")
             algo = TimeAlgorithm(user.ships, quest)
         case "capacity":
+            print("Capacity")
             algo = CapacityAlgorithm(user.ships, quest)
         case _:
             return jsonify(success=False, code=500, error="Unknown algorithm")
     result = algo.calculate()
-    json_resp = jsonify(success=True, code=200, result=[r.to_json() for r in result])
-    return json_resp
+
+    result[0].print_result()
+
+    return render_template("quest_result.html", result=result, user=user)

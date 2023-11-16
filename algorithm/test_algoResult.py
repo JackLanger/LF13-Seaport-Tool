@@ -6,6 +6,29 @@ from app.models.ship import ShipDTO
 
 
 class TestAlgoResult(TestCase):
+    def test_to_string_empty(self):
+        res = AlgoResult()
+        self.assertEqual(
+            "[]",
+            res.to_json(),
+        )
+
+    def test_to_string_one_round(self):
+        ship_1 = ShipDTO(1, "SHIP_1", 1, 1, 1)
+        res_1 = Resource("RES_1", 1)
+        self.assertEqual(
+            '[{"RES_1":[{"ship_id":1,"name":"SHIP_1", "capacity":1, "sailors":1, "level":1}]},]',
+            AlgoResult([(ship_1, res_1)]).to_json(),
+        )
+
+    def test_to_string(self):
+        ship_1 = ShipDTO(1, "SHIP_1", 1, 1, 1)
+        res_1 = Resource("RES_1", 1)
+        self.assertEqual(
+            '[{"RES_1":[{"ship_id":1,"name":"SHIP_1", "capacity":1, "sailors":1, "level":1}]},{"RES_1":[{"ship_id":1,"name":"SHIP_1", "capacity":1, "sailors":1, "level":1}]},]',
+            AlgoResult([(ship_1, res_1), (ship_1, res_1)]).to_json(),
+        )
+
     def test_can_add_twice_same(self):
         ship_1 = ShipDTO(1, "SHIP_1", 1, 1, 1)
         res_1 = Resource("RES_1", 1)
