@@ -109,15 +109,14 @@ def compute_quest(quest_id):
     algo = None
     match data["algo"].lower():
         case "time":
-            print("Time")
             algo = TimeAlgorithm(user.ships, quest)
         case "capacity":
-            print("Capacity")
             algo = CapacityAlgorithm(user.ships, quest)
         case _:
             return jsonify(success=False, code=500, error="Unknown algorithm")
     result = algo.calculate()
 
-    result[0].print_result()
+    for res in result:
+        res.print_result()
 
     return render_template("quest_result.html", result=result, user=user)
