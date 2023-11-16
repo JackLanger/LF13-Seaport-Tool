@@ -1,7 +1,7 @@
 from typing import List, Dict, Tuple
 
 
-from flask import json
+import json
 
 from app.models.quest import QuestDTO, Resource
 from app.models.ship import ShipDTO
