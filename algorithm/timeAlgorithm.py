@@ -8,9 +8,9 @@ class TimeAlgorithm(Algorithm):
     def __init__(self, ships: List[ShipDTO], quest: QuestDTO):
         super().__init__(ships, quest)
 
-    def calculate(self) -> AlgoResult:
+    def calculate(self) -> [AlgoResult]:
         selected_ships = self.select_ships()
-        result = AlgoResult(selected_ships)
+        result = [AlgoResult(selected_ships)]
 
         return result
 
@@ -45,7 +45,7 @@ if __name__ == "__main__":
     time_algo = TimeAlgorithm(ships, quest)
     result = time_algo.calculate()
 
-    result.print_result()
+    result[0].print_result()
 
 
 # wenn mehr runden als momentan beste Lösung kann der Algorithmus abgebrochen werden
