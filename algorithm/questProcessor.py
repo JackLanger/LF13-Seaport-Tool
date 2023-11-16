@@ -9,25 +9,39 @@ from app.models.ship import ShipDTO
 
 class AlgoResult:
     round_count: int
-    rounds: List[Dict[Resource, List[ShipDTO]]]
+    rounds: List[Dict[str, List[ShipDTO]]]
 
     def __init__(self, data: List[Tuple[ShipDTO, Resource]] = None):
         self.rounds = []
-        for ship, resource in data:
-            if len(self.rounds) == 0:
-                self.rounds.append({resource.name: [ship]})
-                continue
+        if data:
+            for ship, resource in data:
+                if len(self.rounds) == 0:
+                    self.rounds.append({resource.name: [ship]})
+                    continue
 
-            ship_added = False
-            for i in range(len(self.rounds)):
-                if resource.name not in self.rounds[i]:
-                    self.rounds[i][resource.name] = [ship]
-                    ship_added = True
-                elif ship not in self.rounds[i][resource.name]:
-                    self.rounds[i][resource.name].append(ship)
+                ship_added = False
+                for i in range(len(self.rounds)):
+                    if resource.name not in self.rounds[i]:
+                        self.rounds[i][resource.name] = [ship]
+                        ship_added = True
+                    elif ship not in self.rounds[i][resource.name]:
+                        self.rounds[i][resource.name].append(ship)
 
-            if not ship_added:
-                self.rounds.append({resource.name: [ship]})
+                if not ship_added:
+                    self.rounds.append({resource.name: [ship]})
+
+    def to_json(self):
+        json_str = "["
+        for r in self.rounds:
+            for k in r:
+                json_str += f'{{"{k}":['
+                for ship in r[k]:
+                    json_str += f'{{"ship_id":{ship.id},"name":"{ship.name}", "capacity":{ship.capacity}, "sailors":{ship.sailors}, "level":{ship.level}}}'
+                    if ship != r[k][-1]:
+                        json_str += ","
+                json_str += "]},"
+        json_str += "]"
+        return json_str
 
     def get_round_count(self) -> int:
         return len(self.rounds)
