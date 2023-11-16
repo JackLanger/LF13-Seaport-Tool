@@ -1,0 +1,431 @@
+<article>
+    {% from 'svg.jinja' import can,floppy with context %}
+    <p class="h1">Quests</p>
+    <div class="accordion accordion-flush w-md-50 p-3" id="quest-accordion" style="background-color:#3f7597">
+        {% for quest in user.quests %}
+            <div class="accordion accordion-flush m-3" id="quest-accordion-{{ quest.id }}">
+                <div class="accordion-item">
+                    <h2 class="accordion-header white" id="flush-headingOne-{{ quest.id }}">
+                        <button class="accordion-button collapsed"
+                                id="quest-accordion-button-{{ quest.id }}"
+                                type="button"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#flush-quest-{{ quest.id }}"
+                                aria-expanded="false"
+                                aria-controls="flush-quest-{{ quest.id }}">
+                            # {{ loop.index }} - {{ quest.title }}
+                        </button>
+                    </h2>
+                    <div id="flush-quest-{{ quest.id }}"
+                         class="accordion-collapse collapse"
+                         aria-labelledby="flush-headingOne-{{ quest.id }}"
+                         data-bs-parent="#compute-accordion-{{ quest.id }}">
+                        <div class="accordion-body">
+                            <div>
+                                <div class="form-check form-switch ">
+                                    <input
+                                            type="checkbox"
+                                            id="quest-{{ quest.id }}-edit"
+                                            name="isEdit"
+                                            value="true"
+                                            class="form-check-input"
+                                            data-toggle="tooltip"
+                                            data-placement="top"
+                                            title="Enable editing."
+                                    >
+                                    <label id="quest-{{ quest.id }}-edit_label" for="edit-{{ quest.id }}"
+                                           class="form-check-label white">Edit</label>
+                                </div>
+
+
+                                <div id="quest-{{ quest.id }}-info">
+
+                                    <input id="quest-{{ quest.id }}-name" name="name" readonly="readonly" type="text"
+                                           value="{{ quest.name }}"
+                                           class="h2 form-control">
+
+                                    <div class="resource_table m-3">
+                                        <table>
+                                            <thead>
+                                            <tr>
+                                                <th class="col-1">#</th>
+                                                <th>Resource</th>
+                                                <th>Amount</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody id="resource_fields-{{ quest.id }}">
+                                            {% for r in quest.resources %}
+                                                <tr id="resource_fields-{{ quest.id }}{{ loop.index }}">
+                                                    <td>{{ loop.index }}</td>
+                                                    <td>
+                                                        <input
+                                                            readonly="readonly"
+                                                            type="text"
+                                                            class="form-control"
+                                                            name="r_name"
+                                                            value="{{ r.name }}">
+                                                    </td>
+                                                    <td>
+                                                        <input
+                                                            readonly="readonly"
+                                                            type="number"
+                                                            class="form-control"
+                                                            name="r_amount"
+                                                            value="{{ r.amount }}">
+                                                    </td>
+                                                    <td >
+                                                    <button
+                                                        class="m-2 remove_resource_btn"
+                                                        id="remove_resource_btn_{{ quest.id }}{{ loop.index }}"
+                                                        hidden
+                                                        onclick="this.parentNode.parentNode.remove()" >X</button>
+
+                                                    </td>
+
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+                                        <div id ="last_resource_fields-{{ quest.id}}">
+                                                <button
+                                                    class="m-2 round_btn_green"
+                                                    id="add_resource_btn_{{ quest.id }}" >+</button>
+                                                    <script>
+                                                        $('#add_resource_btn_{{ quest.id }}').hide()
+                                                        $("#add_resource_btn_{{ quest.id }}").click(e=>{
+                                                            const resources = $('#resource_fields-{{ quest.id }}')
+                                                            const index = resources.children().length
+                                                            const html =`
+                                                            <tr id="resource_fields-{{ quest.id }}${index}">
+                                                                <td>${index+1}</td>
+                                                                <td>
+                                                                    <input
+                                                                        type="text"
+                                                                        class="form-control"
+                                                                        name="r_name"
+                                                                        placeholder="Resource Name"
+                                                                        value="">
+                                                                </td>
+                                                                <td>
+                                                                    <input
+                                                                        type="number"
+                                                                        class="form-control"
+                                                                        name="r_amount"
+                                                                        value="0">
+                                                                </td>
+                                                                <td>
+                                                                <button
+                                                                    class="m-2 remove_resource_btn"
+                                                                    id="remove_resource_btn_{{ quest.id }}${index+1}"
+                                                                    onclick="this.parentNode.parentNode.remove()"
+                                                                    >X</button>
+                                                                </td>
+                                                            </tr>`
+                                                            {#$("last_resource_fields-{{ quest.id}}").prepend(html)#}
+                                                            resources.append(html)
+                                                        });
+                                                        // todo: insert before the add button
+                                                    </script>
+                                                </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="accordion accordion-flush m-3" id="compute-accordion-{{ quest.id }}">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="flush-headingOne-{{ quest.id }}">
+                                        <button class="accordion-button collapsed white"
+                                                type="button"
+                                                data-bs-toggle="collapse"
+                                                data-bs-target="#flush-collapseOne-{{ quest.id }}"
+                                                aria-expanded="false"
+                                                aria-controls="flush-collapseOne-{{ quest.id }}"
+                                                >
+                                            Calculate
+                                        </button>
+                                    </h2>
+                                    <div id="flush-collapseOne-{{ quest.id }}"
+                                         class="accordion-collapse collapse"
+                                         aria-labelledby="flush-headingOne-{{ quest.id }}"
+                                         data-bs-parent="#compute-accordion-{{ quest.id }}">
+                                        <div class="accordion-body">
+                                            <div class="form-check form-switch">
+                                                <input
+                                                        type="checkbox"
+                                                        id="capacity-{{ quest.id }}"
+                                                        name="isCapacity"
+                                                        value="true"
+                                                        class="form-check-input"
+                                                        data-toggle="tooltip"
+                                                        data-placement="top"
+                                                        title="Compute with focus on capacity or time.">
+                                                <label id="capacity-{{ quest.id }}_label" for="capacity-{{ quest.id }}"
+                                                       class="form-check-label white">Time</label>
+                                                <div class="table-responsive">
+                                                <table class="table" id="result-table-{{ quest.id }}">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col">Round no</th>
+                                                        <th scope="col">Resources/Ships</th>
+{#                                                        <th>Resources</th>#}
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody hidden >
+
+                                                    </tbody>
+                                                </table>
+</div>
+                                            </div>
+
+                                            <button class="btn btn-light" onclick="compute_quest({{ quest.id }})">Calculate</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="m-3 p-2">
+                            <div class="btn col" onclick="delete_quest({{ quest.id }})">
+                                {{ can() }}
+                            </div>
+                            <div id="quest-{{ quest.id }}-save" class="btn col" onclick="save_quest({{ quest.id }})">
+                                {{ floppy() }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <script type="text/javascript">
+
+                function delete_quest(id){
+                    $.ajax('/quests/delete/'+ id , {
+                        method: 'POST',
+                        success: function(data) {
+                            $(`#quest-accordion-${ id }`).remove()
+                        },
+                        error: function(error) {
+                            console.log(error);
+                        }
+                    })
+                }
+
+                function save_quest(id) {
+                    console.log(id)
+                    const form = new FormData();
+                    const quest_info = $(`#quest-${id}-info`);
+                    const name = $(`#quest-${id}-name`);
+                    const btn = $(`#quest-accordion-button-${id}`);
+                    const name_arr = btn.text().split('-');
+                    name_arr[1] = name.val();
+                    btn.text(name_arr.join('- '));
+                    form.append('name', name.val());
+                    let resources = collect_resources(id)
+                    console.log(resources)
+
+                    form.append('name',JSON.stringify(name.val()))
+                    form.append('resources', JSON.stringify(resources))
+
+                    $.ajax(`/quests/edit/${id}`,{
+                        method: 'POST',
+                        data: form,
+                        contentType: false,
+                        processData: false,
+                        success: function (data) {
+                            console.log('success',data)
+                        },
+                        error: function (error) {
+                            console.log('failed',error)
+                        }
+                    })
+                }
+
+
+                $('#capacity-{{ quest.id }}').click(e => {
+                    const label = $('#capacity-{{ quest.id }}_label')
+                    if (e.target.checked) {
+                        label.text('Capacity')
+                    } else {
+                        label.text('Time')
+                    }
+                })
+
+
+                Array.from($('#quest-{{ quest.id }}-info').children().find('input')).forEach(c => {
+
+                    c.setAttribute('readonly', true)
+                    c.style.background = 'transparent';
+                    c.style.border = 'none';
+                })
+
+                $('#quest-{{ quest.id }}-save').hide()
+
+                $('#quest-{{ quest.id }}-edit').click(e => {
+                    const label = $('#quest-{{ quest.id }}-edit_label')
+                    const title = $('#quest-{{ quest.id }}-name')
+                    const quest_info = $('#quest-{{ quest.id }}-info')
+                    const save_btn = $('#quest-{{ quest.id }}-save')
+                    if (e.target.checked) {
+                        label.text('Edit Mode')
+                        enable_jquery(title)
+                        Array.from(quest_info.children().find('button')).forEach(b => b.removeAttribute('hidden'))
+                        let index = 0;
+                        Array.from(quest_info.children().find('input')).forEach(c => {
+                            {#$('#remove_resource_btn_{{ quest.id }}'+index++).show()#}
+                            enable_js(c)
+                        })
+                        $('#add_resource_btn_{{ quest.id }}').show()
+                        save_btn.show()
+                    } else {
+                        label.text('Edit')
+                        disable_jquery(title)
+
+                        Array.from(quest_info.children().find('button')).forEach(b => b.setAttribute('hidden',true))
+                        let index = 0;
+                        Array.from(quest_info.children().find('input')).forEach(c => {
+                            {#$('#remove_resource_btn_{{ quest.id }}'+index++).hide()#}
+                            disable_js(c)
+                        })
+                        $('#add_resource_btn_{{ quest.id }}').hide()
+                        save_btn.hide();
+                    }
+                })
+            </script>
+        {% endfor %}
+    </div>
+    <script type="text/javascript">
+        function enable_jquery(target) {
+            target.removeAttr('readonly')
+            target.css('background', 'white');
+            target.css('color', 'black');
+        }
+
+        function disable_jquery(target) {
+            target.css('background', 'transparent');
+            target.attr('readonly', true)
+            target.css('color', 'white');
+            target.css('border' , 'none');
+        }
+
+        function enable_js(target) {
+            target.removeAttribute('readonly')
+            target.style.background = 'white';
+            target.style.color = 'black';
+        }
+
+        function disable_js(target) {
+            target.style.background = 'transparent';
+            target.setAttribute('readonly', true);
+            target.style.color = 'white';
+            target.style.border = 'none';
+        }
+
+
+        function addResourceField() {
+		const resourceFields = document.getElementById('resource-fields');
+		const resourceField = document.createElement('div');
+		resourceField.className = 'resource-field';
+		resourceField.innerHTML = `
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <input type="text" name="resource_name" class="form-control" placeholder="Resource Name" required>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <input type="number" name="resource_amount" class="form-control" placeholder="Amount" required>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <button type="button" class="btn btn-danger" onclick="removeResourceField(this)">Remove</button>
+                    </div>
+                </div>
+            `;
+		resourceFields.appendChild(resourceField);
+	}
+
+    function collect_resources(quest_id){
+        const quest_info =$(`#quest-${quest_id}-info`)
+        let resources = []
+        Array.from(quest_info.children().find('input')).forEach(child => {
+            if (child.name === 'r_name') {
+                resources.push({
+                    name: child.value,
+                    amount: 0
+                })
+            } else {
+                resources[resources.length - 1].amount = child.value
+            }
+        });
+        return resources;
+    }
+
+    function compute_quest(quest_id){
+            let algo_type = $(`#capacity-${ quest_id }_label`).html()
+        $.ajax(`/quests/compute/${quest_id}`,{
+            method: 'POST',
+            dataType:'json',
+            data: JSON.stringify({algo: algo_type}),
+            contentType: 'application/json',
+            processData: false,
+            success: function (data) {
+                console.log('success',data)
+                console.log('result json',JSON.parse(data.result))
+                create_result_table(quest_id,JSON.parse(data.result))
+            },
+            error: function (error) {
+                console.log('failed',error)
+            }
+        })
+
+    }
+
+        function create_result_table(quest_id,data){
+            const t_body = $(`#result-table-${quest_id}> tbody:last-child`);
+            t_body.empty();
+            t_body.removeAttr('hidden');
+            let row_number = 1;
+            for (let r in data) {
+                const dict = JSON.parse(data[r])
+                let str = ""
+                for (let key in dict) {
+                    str += key + ":" + "["
+                    let ships  = JSON.parse(dict[key])
+                    let ship_array = []
+                    console.log(ships)
+
+                        str += ship_array.join(", ") + "]"
+
+                    t_body.append(`<tr>
+                                <td>${row_number++}</td>
+                                <td>${str}</td>
+                            </tr>`)
+                }
+            }
+        }
+
+        function create_html_element({type, children, classes,  id, innerHtml,attributes:[{attr_name ,value}], events:[{evt_name, func}]}){
+            const element = document.createElement(type);
+            if (classes) {
+                element.className = classes;
+            }
+            if (id) {
+                element.id = id;
+            }
+            if (innerHtml) {
+                element.innerHTML = innerHtml;
+            }
+            if (attr_name) {
+                element.setAttribute(attr_name, value);
+            }
+            if (evt_name) {
+                element.addEventListener(evt_name, func);
+            }
+
+            if(children){
+                children.forEach(child => {
+                    element.appendChild(create_html_element(child.type, child))
+                })
+            }
+            return element;
+        }
+    </script>
+</article>

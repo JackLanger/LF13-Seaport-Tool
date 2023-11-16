@@ -1,3 +1,4 @@
+
 function addResourceField() {
     const resourceFields = document.getElementById('resource-fields');
     const resourceField = document.createElement('div');
@@ -23,33 +24,44 @@ function removeResourceField(button) {
     const resourceField = button.parentNode.parentNode.parentNode;
     resourceFields.removeChild(resourceField);
 }
+function sendFormData(){
+    document.getElementById('createQuestForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+        const formData = new FormData(document.getElementById('createQuestForm'));
+        const resources = [];
 
-document.getElementById('createQuestForm').addEventListener('submit', function (event) {
-    event.preventDefault();
-    const formData = new FormData(document.getElementById('createQuestForm'));
-    const resources = [];
-
-    // Collect resource data
-    document.querySelectorAll('.resource-field').forEach(function (field) {
-        const resourceName = field.querySelector('input[name="resource_name"]').value;
-        const resourceAmount = field.querySelector('input[name="resource_amount"]').value;
-        resources.push({ name: resourceName, amount: resourceAmount });
-    });
-
-    formData.append('resources', JSON.stringify(resources));
-
-    // Send the POST request
-    fetch('/quests/create', {
-        method: 'POST',
-        body: formData
-    })
-        .then(response => response.json())
-        .then(data => {
-            // Handle the response here (e.g., show a success message)
-            console.log(data);
-        })
-        .catch(error => {
-            // Handle errors here
-            console.error(error);
+        // Collect resource data
+        document.querySelectorAll('.resource-field').forEach(function (field) {
+            const resourceName = field.querySelector('input[name="resource_name"]').value;
+            const resourceAmount = field.querySelector('input[name="resource_amount"]').value;
+            resources.push({ name: resourceName, amount: resourceAmount });
         });
-});
+
+        formData.append('resources', JSON.stringify(resources));
+
+        // Send the POST request
+        fetch('/quests/create', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                // Handle the response here (e.g., show a success message)
+                console.log(data);
+            })
+            .catch(error => {
+                // Handle errors here
+                console.error(error);
+            });
+    });
+}
+
+
+function edit_quest(quest){
+    $('#')
+}
+
+function delete_quest(quest){
+
+}
+
