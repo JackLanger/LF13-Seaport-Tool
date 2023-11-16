@@ -19,6 +19,7 @@ class ShipDTO:
         self.capacity = capacity
         self.sailors = sailors
         self.level = level
+        self.storage = []
 
     @property
     def json(self):
