@@ -1,4 +1,6 @@
 import itertools
+from questProcessor import AlgoResult
+
 class LocalResource:
     def __init__(self,name):
         self.name = name
@@ -62,12 +64,13 @@ class CapCrit:
         
     def permutate(self):
         round = []
-        for quests in self.questPermutation():
-            for ships in self.shipPermutation():
+        for quests in self.questPermutation()[::10]:
+            for ships in self.shipPermutation()[::2]:
                 round.append(self.calculate(ships,quests))
                 for quest in quests:
-                    quest.restoreObject()                
-        return self.getBest(round)
+                    quest.restoreObject()
+        result = self.getBest(round)
+        return AlgoResult(result[:10])
                 
     def calculate(self,ships,quest,n = 0):
         localShips = list(ships)
