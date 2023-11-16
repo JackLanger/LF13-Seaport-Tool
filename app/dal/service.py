@@ -1,3 +1,4 @@
+import json
 import uuid
 from typing import Dict
 
@@ -6,11 +7,11 @@ from app.models.ship import ShipDTO
 from app.models.user import UserDTO
 
 ships = [
-    ShipDTO(1, "Ship 1", 1, 5, 1),
+    ShipDTO(1, "Ship 1", 10, 5, 1),
     ShipDTO(2, "Ship 2", 10, 15, 5),
     ShipDTO(3, "Ship 3", 11, 7, 3),
     ShipDTO(4, "Ship 4", 9, 5, 2),
-    ShipDTO(5, "Ship 5", 2, 1, 4),
+    ShipDTO(5, "Ship 5", 25, 1, 4),
 ]
 
 
@@ -71,7 +72,12 @@ class UserService:
         return self.user
 
     def save(self, user: UserDTO):
-        pass
+        # with open(self.datasource, "rw") as f:
+        #     content = f.read()
+        #     content = json.loads(content)
+        #     content.append(user.json())
+        #     f.write(json.dumps(content))
+        return self.user
 
     def get_by_id(self, user_id):
         return self.user

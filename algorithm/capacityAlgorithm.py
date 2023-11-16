@@ -28,8 +28,15 @@ class CapacityAlgorithm(Algorithm):
         resources: List[Resource],
         used_ships: List[Tuple[ShipDTO, Resource]],
     ):
+        delta = resources_shipped - self.total_resources_needed
+        if delta > self.__bestResult:
+            return
+
         if resources_shipped >= self.total_resources_needed:
-            delta = resources_shipped - self.total_resources_needed
+            for r in resources:
+                if r.amount > 0:
+                    return
+
             if delta < self.__bestResult:
                 self.__results.clear()
                 self.__bestResult = delta
@@ -41,12 +48,16 @@ class CapacityAlgorithm(Algorithm):
             return
 
         for ship in self.ships:
+            if self.__bestResult == 0 and len(self.__results) >= 1000:
+                return
+
             for i in range(len(resources)):
                 if resources[i].amount > 0:
                     # create a copy of the resources resource for each ship and each resource
                     # in order to compute all the variations
                     res_cpy = copy.deepcopy(resources)
                     res_cpy[i].amount -= ship.capacity
+
                     self.compute_ships(
                         resources_shipped + ship.capacity,
                         res_cpy,

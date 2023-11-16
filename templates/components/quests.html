@@ -359,14 +359,18 @@
     }
 
     function compute_quest(quest_id){
+            let algo_type = $(`#capacity-${ quest_id }_label`).html()
         $.ajax(`/quests/compute/${quest_id}`,{
             method: 'POST',
             dataType:'json',
-            data: JSON.stringify({algo: $(`#capacity-${quest_id}`).val() ? 'time' : 'capacity'}),
+            data: JSON.stringify({algo: algo_type}),
             contentType: 'application/json',
             processData: false,
             success: function (data) {
                 console.log('success',data)
+                // iterieren über data, multiple ergebnisse möglich
+                let data_json = JSON.parse(data)
+                console.log(data,data_json)
                 create_result_table(quest_id,data.result)
             },
             error: function (error) {
@@ -388,17 +392,19 @@
                 for (let key in obj.rounds[i]) {
                     str += key + ":" + "["
                     ship_array = []
+
                     for (ship_index in obj.rounds[i][key]) {
                         const ship = obj.rounds[i][key][ship_index];
                         ship_array.push(JSON.parse(ship).name)
                     }
+
                     str += ship_array.join(", ") + "]"
+
                 }
+
                 t_body.append(`<tr>
                                 <td>${row_number++}</td>
-                                <td>
-                                    ${str}
-                                </td>
+                                <td>${str}</td>
                             </tr>`)
             }
 

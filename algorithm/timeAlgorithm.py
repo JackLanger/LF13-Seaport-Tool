@@ -17,8 +17,9 @@ class TimeAlgorithm(Algorithm):
             self.total_resources_needed += r.amount
 
     def calculate(self) -> [AlgoResult]:
-        self.compute_ships(0, self.quest.resources, [])
-
+        if len(self.ships) > 0:
+            self.compute_ships(0, self.quest.resources, [])
+        # auf Permutationen prüfen
         return self.__results
 
     def compute_ships(
@@ -27,9 +28,12 @@ class TimeAlgorithm(Algorithm):
         resources: List[Resource],
         used_ships: List[Tuple[ShipDTO, Resource]],
     ):
+        result = AlgoResult(used_ships)
+        if result.get_round_count() > self.__bestResult:
+            return
+
         if resources_shipped >= self.total_resources_needed:
-            result = AlgoResult(used_ships)
-            round_count = result.round_count
+            round_count = result.get_round_count()
             if round_count < self.__bestResult:
                 self.__results.clear()
                 self.__bestResult = round_count
@@ -47,8 +51,9 @@ class TimeAlgorithm(Algorithm):
                     # in order to compute all the variations
                     res_cpy = copy.deepcopy(resources)
                     res_cpy[i].amount -= ship.capacity
+                    ship_list = used_ships + [(ship, res_cpy[i])]
                     self.compute_ships(
                         resources_shipped + ship.capacity,
                         res_cpy,
-                        used_ships + [(ship, res_cpy[i])],
+                        ship_list,
                     )
