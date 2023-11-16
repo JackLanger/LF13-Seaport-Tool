@@ -359,14 +359,18 @@
     }
 
     function compute_quest(quest_id){
+            let algo_type = $(`#capacity-${ quest_id }_label`).html()
         $.ajax(`/quests/compute/${quest_id}`,{
             method: 'POST',
             dataType:'json',
-            data: JSON.stringify({algo: $(`#capacity-${quest_id}`).val() ? 'time' : 'capacity'}),
+            data: JSON.stringify({algo: algo_type}),
             contentType: 'application/json',
             processData: false,
             success: function (data) {
                 console.log('success',data)
+                // iterieren über data, multiple ergebnisse möglich
+                let data_json = JSON.parse(data)
+                console.log(data,data_json)
                 create_result_table(quest_id,data.result)
             },
             error: function (error) {
@@ -383,23 +387,29 @@
             t_body.empty();
             t_body.removeAttr('hidden');
             let row_number = 1;
-            for (let i = 0; i < obj.rounds.length; i++) {
-                let str = "";
-                for (let key in obj.rounds[i]) {
-                    str += key + ":" + "["
-                    ship_array = []
-                    for (ship_index in obj.rounds[i][key]) {
-                        const ship = obj.rounds[i][key][ship_index];
-                        ship_array.push(JSON.parse(ship).name)
+            for (let k = 0; k < obj.rounds; k++){
+                const round_head = document.createElement('h1');
+                round_head.innerHTML = 'Lösung '+k;
+                for (let i = 0; i < obj[k].rounds.length; i++) {
+                    let str = "";
+                    const round = obj[k].rounds[i];
+                    for (let key in round ) {
+                        str += key + ":" + "["
+                        ship_array = []
+
+                        for (ship_index in round[key]) {
+                            const ship = round[key][ship_index];
+                            ship_array.push(JSON.parse(ship).name)
+                        }
+
+                        str += ship_array.join(", ") + "]"
                     }
-                    str += ship_array.join(", ") + "]"
-                }
-                t_body.append(`<tr>
+
+                    t_body.append(`<tr>
                                 <td>${row_number++}</td>
-                                <td>
-                                    ${str}
-                                </td>
+                                <td>${str}</td>
                             </tr>`)
+                }
             }
 
 

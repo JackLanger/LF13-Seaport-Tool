@@ -1,8 +1,5 @@
 from typing import List, Dict, Tuple
 
-
-from flask import json
-
 from app.models.quest import QuestDTO, Resource
 from app.models.ship import ShipDTO
 
@@ -13,21 +10,23 @@ class AlgoResult:
 
     def __init__(self, data: List[Tuple[ShipDTO, Resource]] = None):
         self.rounds = []
-        for ship, resource in data:
-            if len(self.rounds) == 0:
-                self.rounds.append({resource.name: [ship]})
-                continue
 
-            ship_added = False
+        for ship, resource in data:
             for i in range(len(self.rounds)):
+                if any(ship in ships for ships in self.rounds[i].values()):
+                    continue
+
                 if resource.name not in self.rounds[i]:
                     self.rounds[i][resource.name] = [ship]
-                    ship_added = True
+                    break
                 elif ship not in self.rounds[i][resource.name]:
                     self.rounds[i][resource.name].append(ship)
-
-            if not ship_added:
+                    break
+            else:
                 self.rounds.append({resource.name: [ship]})
+
+    def get_round_count(self) -> int:
+        return len(self.rounds)
 
     def add_round(self, round_data):
         self.rounds.append(round_data)

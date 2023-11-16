@@ -47,17 +47,21 @@ class CapacityAlgorithm(Algorithm):
 
 
 if __name__ == "__main__":
-    ship1 = ShipDTO(ship_id=1, name="Ship1", capacity=20, sailors=10)
-    ship2 = ShipDTO(ship_id=2, name="Ship2", capacity=15, sailors=10)
-    ship3 = ShipDTO(ship_id=3, name="Ship3", capacity=25, sailors=10)
+    ship1 = ShipDTO(ship_id=1, name="A", capacity=50, sailors=10)
+    ship2 = ShipDTO(ship_id=2, name="B", capacity=100, sailors=10)
+    ship3 = ShipDTO(ship_id=3, name="C", capacity=200, sailors=10)
+    ship4 = ShipDTO(ship_id=3, name="D", capacity=60, sailors=10)
 
-    ships = [ship1, ship2, ship3]
+    ships = [ship1, ship2, ship3, ship4]
 
-    resources = [Resource(name="Wood", amount=30), Resource(name="Fish", amount=50)]
+    resources = [
+        Resource(name="Wood", amount=400),
+        Resource(name="Fish", amount=150),
+        Resource(name="Stein", amount=200),
+    ]
 
     quest = QuestDTO(id=1, title="Sample Quest", resources=resources)
     time_algo = CapacityAlgorithm(ships, quest)
-    results = time_algo.calculate()
+    result = time_algo.calculate()
 
-    for algo_result in results:
-        algo_result.print_result()
+    result[0].print_result()
