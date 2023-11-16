@@ -114,4 +114,5 @@ def compute_quest(quest_id):
         case _:
             return jsonify(success=False, code=500, error="Unknown algorithm")
     result = algo.calculate()
-    return jsonify(success=True, code=200, result=result)
+    json_resp = jsonify(success=True, code=200, result=[r.to_json() for r in result])
+    return json_resp

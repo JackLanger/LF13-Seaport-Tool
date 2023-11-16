@@ -1,6 +1,4 @@
-import json
 import uuid
-from typing import Dict
 
 from app.models.quest import QuestDTO, Resource
 from app.models.ship import ShipDTO
