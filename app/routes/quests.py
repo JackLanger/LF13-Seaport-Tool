@@ -1,6 +1,6 @@
 import json
+from json import JSONEncoder
 
-import pykson
 from flask import Blueprint, render_template, redirect, request, jsonify
 
 from algorithm.capacityAlgorithm import CapacityAlgorithm
@@ -115,10 +115,11 @@ def compute_quest(quest_id):
         case _:
             return jsonify(success=False, code=500, error="Unknown algorithm")
     result = algo.calculate()
-    return render_template("quest_result.html", result)
-    # res = []
-    # for d in result:
-    #     res.append(d.to_json())
-    #
-    # json_resp = jsonify(success=True, code=200, result=res)
-    # return json_resp
+
+    class Encoder(JSONEncoder):
+        def default(self, o):
+            return o.__dict__
+
+    res = Encoder().encode(result)
+
+    return jsonify(success=True, code=200, result=res)

@@ -367,9 +367,10 @@
             contentType: 'application/json',
             processData: false,
             success: function (data) {
-                console.log('success',data)
-                console.log('result json',JSON.parse(data.result))
-                create_result_table(quest_id,JSON.parse(data.result))
+                console.log(data)
+
+                let data_json = JSON.parse(data.result)
+                create_result_table(quest_id, data_json)
             },
             error: function (error) {
                 console.log('failed',error)
@@ -383,22 +384,27 @@
             t_body.empty();
             t_body.removeAttr('hidden');
             let row_number = 1;
+            let index = 1;
             for (let r in data) {
-                const dict = JSON.parse(data[r])
                 let str = ""
-                for (let key in dict) {
-                    str += key + ":" + "["
-                    let ships  = JSON.parse(dict[key])
-                    let ship_array = []
-                    console.log(ships)
-
-                        str += ship_array.join(", ") + "]"
-
-                    t_body.append(`<tr>
-                                <td>${row_number++}</td>
-                                <td>${str}</td>
-                            </tr>`)
+                h1 = document.createElement('H1');
+                h1 = `Result ${index++}`;
+                t_body.append(h1)
+                const rounds = data[r].rounds
+                for (let i in rounds){
+                    for(let key in rounds[i]){
+                        console.log(key)
+                        console.log(rounds[i][key])
+                        const ship_arr = []
+                        for (let s in rounds[i][key]){
+                            console.log(rounds[i][key][s])
+                            ship_arr.push(rounds[i][key][s].name)
+                        }
+                        const ship_str = `[${ship_arr.join(', ')}]`
+                        t_body.append(`<tr><td>${key}</td><td>${ship_str}</td></tr>`)
+                    }
                 }
+
             }
         }
 
