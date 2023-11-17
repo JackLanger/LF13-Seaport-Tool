@@ -15,16 +15,11 @@ class Package:
     def restoreObject(self):
         self.content = self.amount*[LocalResource(self.name)]
         
-class CapCrit:
+class TimeCrit:
     def __init__(self,ships,quest):
-        self.ships = []
-        self.quest = []
-        
         self.perShips = ships
         self.perQuest = []
-        
         self.round = []
-        self.biground = []
         
         for q in quest.resource:
             self.perQuest.append(Package(q))
