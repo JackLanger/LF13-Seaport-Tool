@@ -9,6 +9,7 @@ class ShipDTO:
     - capacity: int,
     - sailors: int,
     - level: int = 1
+    - storage: List
     """
 
     def __init__(

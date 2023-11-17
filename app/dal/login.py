@@ -1,5 +1,4 @@
 import pickle
-from app.models.user import User
 from dal import Dal
 import hashlib
 
