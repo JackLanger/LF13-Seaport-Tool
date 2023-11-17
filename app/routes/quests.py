@@ -1,4 +1,6 @@
 import json
+from algorithm.capacityThomas import CapCrit
+from algorithm.timeThomas import TimeCrit
 
 import pykson
 from flask import Blueprint, render_template, redirect, request, jsonify
@@ -109,9 +111,9 @@ def compute_quest(quest_id):
     algo = None
     match data["algo"].lower():
         case "time":
-            algo = TimeAlgorithm(user.ships, quest)
+            algo = TimeCrit(user.ships, quest)
         case "capacity":
-            algo = CapacityAlgorithm(user.ships, quest)
+            algo = CapCrit(user.ships, quest)
         case _:
             return jsonify(success=False, code=500, error="Unknown algorithm")
     result = algo.calculate()
