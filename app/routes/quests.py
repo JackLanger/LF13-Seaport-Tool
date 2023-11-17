@@ -1,4 +1,5 @@
 import json
+from json import JSONEncoder
 
 from flask import Blueprint, render_template, redirect, request, jsonify
 
@@ -102,10 +103,9 @@ def compute_quest(quest_id):
     user = verify_is_logged_in()
     if not user:
         return redirect("/login")
-
     user = service.get_by_id(user)
     data = request.get_json()
-    quest = next(q for q in user.quests if q.id == quest_id)
+    quest = list(filter(lambda q: q.id == quest_id, user.quests))[0]
     algo = None
     match data["algo"].lower():
         case "time":
@@ -116,7 +116,10 @@ def compute_quest(quest_id):
             return jsonify(success=False, code=500, error="Unknown algorithm")
     result = algo.calculate()
 
-    for res in result:
-        res.print_result()
+    class Encoder(JSONEncoder):
+        def default(self, o):
+            return o.__dict__
 
-    return render_template("quest_result.html", result=result, user=user)
+    res = Encoder().encode(result)
+
+    return jsonify(success=True, code=200, result=res)
