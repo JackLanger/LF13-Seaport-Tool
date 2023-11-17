@@ -9,6 +9,7 @@ class ShipDTO:
     - capacity: int,
     - sailors: int,
     - level: int = 1
+    - storage: List
     """
 
     def __init__(
@@ -19,6 +20,7 @@ class ShipDTO:
         self.capacity = capacity
         self.sailors = sailors
         self.level = level
+        self.storage = []
 
     @property
     def json(self):
