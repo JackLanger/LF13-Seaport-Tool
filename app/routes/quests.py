@@ -1,12 +1,11 @@
 import json
-from algorithm.capacityThomas import CapCrit
-from algorithm.timeThomas import TimeCrit
+from json import JSONEncoder
 
-import pykson
 from flask import Blueprint, render_template, redirect, request, jsonify
 
-from algorithm.capacityAlgorithm import CapacityAlgorithm
-from algorithm.timeAlgorithm import TimeAlgorithm
+
+from algorithm.capacityThomas import CapCrit
+from algorithm.timeThomas import TimeCrit
 from app.models.quest import Resource
 from app.routes.validation.login_validation import verify_is_logged_in
 from app.dal.service import UserService
@@ -116,11 +115,12 @@ def compute_quest(quest_id):
             algo = CapCrit(user.ships, quest)
         case _:
             return jsonify(success=False, code=500, error="Unknown algorithm")
-    result = algo.calculate()
-    return render_template("quest_result.html", result)
-    # res = []
-    # for d in result:
-    #     res.append(d.to_json())
-    #
-    # json_resp = jsonify(success=True, code=200, result=res)
-    # return json_resp
+    result = algo.calculate(user.ships, quest.resources)
+
+    class Encoder(JSONEncoder):
+        def default(self, o):
+            return o.__dict__
+
+    res = Encoder().encode(result)
+
+    return jsonify(success=True, code=200, result=res)
