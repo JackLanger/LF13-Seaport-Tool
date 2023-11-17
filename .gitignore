@@ -1,7 +1,7 @@
 .idea/*
 # dotenv
 .env
-
+algorithm
 # virtualenv
 .venv
 venv/
